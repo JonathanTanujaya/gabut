@@ -1,0 +1,104 @@
+import 'package:flutter/material.dart';
+import 'screens/home_screen.dart';
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Dompet Premium',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFFD4AF37),     // Emas klasik
+          secondary: Color(0xFFE6BE8A),   // Emas rose
+          background: Color(0xFF121212),  // Hitam elegan
+          surface: Color(0xFF1E1E1E),     // Hitam permukaan
+          onPrimary: Colors.black,
+          onSecondary: Colors.black,
+          onBackground: Colors.white,
+          onSurface: Colors.white,
+        ),
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        cardTheme: const CardTheme(
+          color: Color(0xFF1E1E1E),
+          elevation: 4,
+          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF1A1A1A),
+          foregroundColor: Color(0xFFD4AF37),
+          elevation: 0,
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            color: Color(0xFFD4AF37),
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textTheme: const TextTheme(
+          titleLarge: TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.bold),
+          titleMedium: TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.bold),
+          bodyLarge: TextStyle(color: Colors.white),
+          bodyMedium: TextStyle(color: Colors.white70),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: const Color(0xFF2A2A2A),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Color(0xFF333333), width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Color(0xFFD4AF37), width: 2),
+          ),
+          labelStyle: const TextStyle(color: Colors.white70),
+          hintStyle: const TextStyle(color: Colors.white30),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFD4AF37),
+            foregroundColor: Colors.black,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            textStyle: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: const Color(0xFFE6BE8A),
+          ),
+        ),
+        iconTheme: const IconThemeData(
+          color: Color(0xFFD4AF37),
+        ),
+        dividerTheme: const DividerThemeData(
+          color: Color(0xFF333333),
+          thickness: 1,
+        ),
+      ),
+      home: const HomeScreen(),
+    );
+  }
+}
