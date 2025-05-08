@@ -1,9 +1,27 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:try2/gas/models/gas_log.dart';
 
-void main() {
+import 'package:try2/gas/screen/beranda.dart';
+import 'package:try2/dompet/screens/home_screen.dart';
+import 'package:try2/gas/service/gas_log_service.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  final appDocumentDir = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
+  await Hive.initFlutter();
+  Hive.registerAdapter(GasLogAdapter());
+  await Hive.openBox<GasLog>('gas_logs');
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => GasLogService(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -17,10 +35,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: const ColorScheme.dark(
-          primary: Color(0xFFD4AF37),     // Emas klasik
-          secondary: Color(0xFFE6BE8A),   // Emas rose
-          background: Color(0xFF121212),  // Hitam elegan
-          surface: Color(0xFF1E1E1E),     // Hitam permukaan
+          primary: Color(0xFFD4AF37),
+          secondary: Color(0xFFE6BE8A),
+          background: Color(0xFF121212),
+          surface: Color(0xFF1E1E1E),
           onPrimary: Colors.black,
           onSecondary: Colors.black,
           onBackground: Colors.white,
@@ -98,7 +116,51 @@ class MyApp extends StatelessWidget {
           thickness: 1,
         ),
       ),
-      home: const HomeScreen(),
+      home: const MainNavigation(),
+    );
+  }
+}
+
+class MainNavigation extends StatefulWidget {
+  const MainNavigation({super.key});
+
+  @override
+  State<MainNavigation> createState() => _MainNavigationState();
+}
+
+class _MainNavigationState extends State<MainNavigation> {
+  int _currentIndex = 0;
+
+  final List<Widget> _pages = [
+    const HomeScreen(),
+    const GasHomeScreen(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xFF1A1A1A),
+        selectedItemColor: const Color(0xFFD4AF37),
+        unselectedItemColor: Colors.white70,
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_balance_wallet),
+            label: 'Dompet',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.local_gas_station),
+            label: 'Bensin',
+          ),
+        ],
+      ),
     );
   }
 }

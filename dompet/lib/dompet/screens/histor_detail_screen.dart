@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:try2/models/reimbursement.dart';
+import 'package:try2/dompet/models/reimbursement.dart';
 import '../models/trans.dart';
 import '../services/database_helper.dart';
 import '../utils/formatters.dart';
