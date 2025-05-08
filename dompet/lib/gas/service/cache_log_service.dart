@@ -21,7 +21,7 @@ class GasLogCache {
     double totalEfficiency = 0;
 
     for (final log in logs) {
-      totalDistance += log.distanceKm;
+      totalDistance += log.distance;
       totalCost += log.cost;
       totalEfficiency += log.kmPerLiter;
     }

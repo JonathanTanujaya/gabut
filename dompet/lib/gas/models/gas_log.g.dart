@@ -8,7 +8,7 @@ part of 'gas_log.dart';
 
 class GasLogAdapter extends TypeAdapter<GasLog> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
   GasLog read(BinaryReader reader) {
@@ -18,27 +18,30 @@ class GasLogAdapter extends TypeAdapter<GasLog> {
     };
     return GasLog(
       date: fields[0] as DateTime,
-      distanceKm: fields[1] as double,
+      distance: fields[1] as double,
       cost: fields[2] as double,
-      fuelLiters: fields[3] as double,
-      kmPerLiter: fields[4] as double,
+      kmPerLiter: fields[3] as double,
+      odometer: fields[4] as double,
+      volume: fields[5] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, GasLog obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.date)
       ..writeByte(1)
-      ..write(obj.distanceKm)
+      ..write(obj.distance)
       ..writeByte(2)
       ..write(obj.cost)
       ..writeByte(3)
-      ..write(obj.fuelLiters)
+      ..write(obj.kmPerLiter)
       ..writeByte(4)
-      ..write(obj.kmPerLiter);
+      ..write(obj.odometer)
+      ..writeByte(5)
+      ..write(obj.volume);
   }
 
   @override

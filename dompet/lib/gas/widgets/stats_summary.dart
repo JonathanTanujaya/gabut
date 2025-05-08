@@ -17,9 +17,9 @@ class StatsSummary extends StatelessWidget {
     double worstEfficiency = double.infinity;
     
     for (var log in logs) {
-      totalDistance += log.distanceKm;
+      totalDistance += log.distance;
       totalCost += log.cost;
-      totalLiters += log.fuelLiters;
+      
       
       if (log.kmPerLiter > bestEfficiency) {
         bestEfficiency = log.kmPerLiter;

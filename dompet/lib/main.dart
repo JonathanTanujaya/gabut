@@ -6,10 +6,12 @@ import 'package:try2/gas/models/gas_log.dart';
 
 import 'package:try2/gas/screen/beranda.dart';
 import 'package:try2/dompet/screens/home_screen.dart';
+import 'package:try2/gas/screen/beranda_controller.dart';
 import 'package:try2/gas/service/gas_log_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   final appDocumentDir = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
   await Hive.initFlutter();
@@ -17,12 +19,20 @@ void main() async {
   await Hive.openBox<GasLog>('gas_logs');
 
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => GasLogService(),
-      child: const MyApp(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => GasLogService()),
+        ChangeNotifierProxyProvider<GasLogService, GasHomeController>(
+          create: (context) => GasHomeController(context.read<GasLogService>()),
+          update: (context, service, controller) =>
+              controller ?? GasHomeController(service),
+        ),
+      ],
+      child: const MyApp(), // Tetap pakai MyApp yang berisi MaterialApp dan MainNavigation
     ),
   );
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
