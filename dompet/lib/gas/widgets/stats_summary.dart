@@ -19,7 +19,7 @@ class StatsSummary extends StatelessWidget {
     for (var log in logs) {
       totalDistance += log.distance;
       totalCost += log.cost;
-      
+      totalLiters += log.volume;
       
       if (log.kmPerLiter > bestEfficiency) {
         bestEfficiency = log.kmPerLiter;
@@ -81,7 +81,7 @@ class StatsSummary extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-              color: Colors.black87,
+              color: Colors.white,
             ),
           ),
           Text(

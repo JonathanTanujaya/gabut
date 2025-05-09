@@ -100,7 +100,7 @@ class EfficiencyChart extends StatelessWidget {
           ),
           belowBarData: BarAreaData(
             show: true,
-            color: Colors.green[50]!,
+            color: Colors.transparent, // Ubah dari Colors.green[50]! menjadi transparan
           ),
           dotData: FlDotData(
             show: true,
