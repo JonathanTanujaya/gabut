@@ -124,13 +124,6 @@ class GasHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<GasHomeController>(
       builder: (context, controller, child) {
-        // Pop-up input odometer awal (hanya jika null)
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (controller.initialOdometer == null) {
-            _showInitialOdometerDialog(context, controller);
-          }
-        });
-
         final logs = controller.service.getLogs();
         final (totalDistance, totalCost, avgEfficiency) =
             controller.service.calculateStats();
@@ -209,6 +202,27 @@ class GasHomeScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // Tombol set odometer awal jika belum diisi
+                                if (controller.initialOdometer == null) ...[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                    child: ElevatedButton.icon(
+                                      icon: const Icon(Icons.speed),
+                                      label: const Text('Set Odometer Awal'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFFD4AF37),
+                                        foregroundColor: Colors.black,
+                                        elevation: 2,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                      ),
+                                      onPressed: () => _showInitialOdometerDialog(context, controller),
+                                    ),
+                                  ),
+                                ],
+
                                 // Dashboard title
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 20),
