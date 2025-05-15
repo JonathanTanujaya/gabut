@@ -6,6 +6,8 @@ import 'package:try2/gas/screen/gas_stats_screen.dart';
 import 'package:try2/gas/widgets/empty_state.dart';
 import 'package:try2/gas/widgets/log_item.dart';
 import 'package:try2/gas/widgets/stat_card.dart';
+import 'package:try2/theme.dart';
+import '../../main.dart';
 
 class GasHomeScreen extends StatelessWidget {
   const GasHomeScreen({super.key});
@@ -137,6 +139,14 @@ class GasHomeScreen extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(
+                context.watch<ThemeProvider>().themeIcon,
+                color: context.watch<ThemeProvider>().themeIconColor,
+              ),
+              tooltip: 'Ganti Tema',
+              onPressed: () => context.read<ThemeProvider>().nextTheme(),
+            ),
             title: const Text(
               "Catatan Bensin", 
               style: TextStyle(fontWeight: FontWeight.bold)
