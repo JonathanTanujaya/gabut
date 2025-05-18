@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:provider/provider.dart';
 import 'package:try2/dompet/models/reimbursement.dart';
 import '../models/trans.dart';
 import '../services/database_helper.dart';
 import '../utils/formatters.dart';
+import '../widgets/theme_switcher.dart';
+import '../../theme.dart';
 import 'history_screen.dart';
+import 'package:flutter/rendering.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,7 +16,6 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
@@ -23,6 +26,8 @@ class _HomeScreenState extends State<HomeScreen>
     thousandSeparator: '.',
     precision: 0,
   );
+  final ScrollController _scrollController = ScrollController();
+  bool _isScrolled = false;
 
   String _selectedCategory = 'OVO';
   String? _customDescription;
@@ -30,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen>
   List<Trans> _transactions = [];
   late TabController _tabController;
   bool _isFormVisible = false;
+  int _selectedIndex = 0;
 
   final List<String> _categories = [
     'OVO',
@@ -47,12 +53,23 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _loadTransactions();
+    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     _tabController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.offset > 0 && !_isScrolled) {
+      setState(() => _isScrolled = true);
+    } else if (_scrollController.offset <= 0 && _isScrolled) {
+      setState(() => _isScrolled = false);
+    }
   }
 
   Future<void> _loadTransactions() async {
@@ -91,14 +108,14 @@ class _HomeScreenState extends State<HomeScreen>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Transaksi berhasil ditambahkan'),
-          backgroundColor: Colors.grey[900],
+          backgroundColor: Theme.of(context).colorScheme.surface,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
           action: SnackBarAction(
             label: 'OK',
-            textColor: const Color(0xFFD4AF37),
+            textColor: Theme.of(context).colorScheme.secondary,
             onPressed: () {},
           ),
         ),
@@ -294,435 +311,422 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     final total = _calculateTotal();
+    final theme = Theme.of(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Dompet Premium'),
+        title: Text(
+          'Dompet Premium',
+          style: TextStyle(
+            color: theme.colorScheme.secondary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: _isScrolled 
+          ? theme.colorScheme.secondary.withOpacity(0.1)
+          : theme.colorScheme.surface,
+        elevation: _isScrolled ? 2 : 0,
         actions: [
+          const ThemeSwitcher(),
           IconButton(
-            icon: const Icon(Icons.history),
-            onPressed:
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HistoryScreen(),
-                  ),
-                ),
+            icon: Icon(
+              Icons.history,
+              color: theme.colorScheme.secondary,
+            ),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HistoryScreen(),
+              ),
+            ),
           ),
         ],
       ),
-      body: Expanded(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 24,
-                ),
-                decoration: const BoxDecoration(
-                  color: Color(0xFF1A1A1A),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(24),
-                    bottomRight: Radius.circular(24),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Saldo Tersedia',
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Rp ${Formatters.formatCurrency(total)}',
-                      style: const TextStyle(
-                        color: Color(0xFFD4AF37),
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            icon: const Icon(Icons.add, size: 18),
-                            label: const Text('Tambah'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFD4AF37),
-                              foregroundColor: Colors.black,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _isFormVisible = !_isFormVisible;
-                              });
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            icon: const Icon(Icons.currency_exchange, size: 18),
-                            label: const Text('Cairkan'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              foregroundColor: const Color(0xFFD4AF37),
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(
-                                  color: Color(0xFFD4AF37),
-                                ),
-                              ),
-                            ),
-                            onPressed: _handleReimburse,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+      body: SingleChildScrollView(
+        controller: _scrollController,
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 24,
+              ),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(24),
+                  bottomRight: Radius.circular(24),
                 ),
               ),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                height: _isFormVisible ? null : 0,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 300),
-                  opacity: _isFormVisible ? 1.0 : 0.0,
-                  child:
-                      _isFormVisible
-                          ? Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Form(
-                              key: _formKey,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF1E1E1E),
-                                      borderRadius: BorderRadius.circular(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Saldo Tersedia',
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurface.withOpacity(0.7),
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Rp ${Formatters.formatCurrency(total)}',
+                    style: TextStyle(
+                      color: theme.colorScheme.secondary,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.add, size: 18),
+                          label: const Text('Tambah'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: theme.colorScheme.secondary,
+                            foregroundColor: Colors.black,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isFormVisible = !_isFormVisible;
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.currency_exchange, size: 18),
+                          label: const Text('Cairkan'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: theme.colorScheme.secondary,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              side: BorderSide(
+                                color: theme.colorScheme.secondary,
+                              ),
+                            ),
+                          ),
+                          onPressed: _handleReimburse,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (_isFormVisible)
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.surface,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: theme.colorScheme.primary.withOpacity(0.2),
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Tambah Transaksi Baru',
+                                      style: TextStyle(
+                                        color: theme.colorScheme.secondary,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const Text(
-                                              'Tambah Transaksi Baru',
-                                              style: TextStyle(
-                                                color: Color(0xFFD4AF37),
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.close,
-                                                color: Colors.white54,
-                                              ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  _isFormVisible = false;
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 16),
-                                        DropdownButtonFormField<String>(
-                                          value: _selectedCategory,
-                                          decoration: const InputDecoration(
-                                            labelText: 'Kategori Transaksi',
-                                            border: OutlineInputBorder(),
-                                            prefixIcon: Icon(Icons.category),
-                                          ),
-                                          items:
-                                              _categories.map((category) {
-                                                return DropdownMenuItem(
-                                                  value: category,
-                                                  child: Text(
-                                                    Formatters.getCategoryDisplayName(
-                                                      category,
-                                                    ),
-                                                    style: const TextStyle(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                );
-                                              }).toList(),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _selectedCategory = value!;
-                                              _showCustomDescription =
-                                                  (value == 'Lainnya');
-                                            });
-                                          },
-                                          dropdownColor: const Color(
-                                            0xFF2A2A2A,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 16),
-                                        if (_showCustomDescription)
-                                          Column(
-                                            children: [
-                                              TextFormField(
-                                                decoration:
-                                                    const InputDecoration(
-                                                      labelText:
-                                                          'Keterangan Detail',
-                                                      border:
-                                                          OutlineInputBorder(),
-                                                      prefixIcon: Icon(
-                                                        Icons.description,
-                                                      ),
-                                                    ),
-                                                validator: (value) {
-                                                  if (_showCustomDescription &&
-                                                      (value == null ||
-                                                          value.isEmpty)) {
-                                                    return 'Keterangan harus diisi';
-                                                  }
-                                                  return null;
-                                                },
-                                                onSaved:
-                                                    (value) =>
-                                                        _customDescription =
-                                                            value,
-                                              ),
-                                              const SizedBox(height: 16),
-                                            ],
-                                          ),
-                                        TextFormField(
-                                          controller: _amountController,
-                                          keyboardType: TextInputType.number,
-                                          decoration: const InputDecoration(
-                                            labelText: 'Jumlah Dana',
-                                            border: OutlineInputBorder(),
-                                            prefixIcon: Icon(
-                                              Icons.attach_money,
-                                            ),
-                                            prefixText: 'Rp ',
-                                          ),
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return 'Jumlah dana harus diisi';
-                                            }
-                                            final cleaned = value.replaceAll(
-                                              '.',
-                                              '',
-                                            );
-                                            if (int.tryParse(cleaned) == null ||
-                                                int.parse(cleaned) <= 0) {
-                                              return 'Jumlah dana harus lebih dari 0';
-                                            }
-                                            return null;
-                                          },
-                                        ),
-                                        const SizedBox(height: 16),
-                                        SizedBox(
-                                          width: double.infinity,
-                                          child: ElevatedButton.icon(
-                                            icon: const Icon(Icons.save),
-                                            label: const Text(
-                                              'Simpan Transaksi',
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: const Color(
-                                                0xFFD4AF37,
-                                              ),
-                                              foregroundColor: Colors.black,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    vertical: 16,
-                                                  ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                              ),
-                                            ),
-                                            onPressed: _submitTransaction,
-                                          ),
-                                        ),
-                                      ],
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.close,
+                                        color: theme.colorScheme.onSurface.withOpacity(0.5),
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _isFormVisible = false;
+                                        });
+                                      },
                                     ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                DropdownButtonFormField<String>(
+                                  value: _selectedCategory,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Kategori Transaksi',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(Icons.category),
+                                  ),
+                                  items: _categories.map((category) {
+                                    return DropdownMenuItem(
+                                      value: category,
+                                      child: Text(
+                                        Formatters.getCategoryDisplayName(
+                                          category,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedCategory = value!;
+                                      _showCustomDescription = (value == 'Lainnya');
+                                    });
+                                  },
+                                ),
+                                if (_showCustomDescription) ...[
+                                  const SizedBox(height: 16),
+                                  TextFormField(
+                                    decoration: const InputDecoration(
+                                      labelText: 'Keterangan Detail',
+                                      border: OutlineInputBorder(),
+                                      prefixIcon: Icon(Icons.description),
+                                    ),
+                                    validator: (value) {
+                                      if (_showCustomDescription &&
+                                          (value == null || value.isEmpty)) {
+                                        return 'Keterangan harus diisi';
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (value) => _customDescription = value,
                                   ),
                                 ],
-                              ),
+                                const SizedBox(height: 16),
+                                TextFormField(
+                                  controller: _amountController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Jumlah Dana',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(Icons.attach_money),
+                                    prefixText: 'Rp ',
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Jumlah dana harus diisi';
+                                    }
+                                    final cleaned = value.replaceAll('.', '');
+                                    if (int.tryParse(cleaned) == null ||
+                                        int.parse(cleaned) <= 0) {
+                                      return 'Jumlah dana harus lebih dari 0';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 16),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton.icon(
+                                    icon: const Icon(Icons.save),
+                                    label: const Text('Simpan Transaksi'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFFD4AF37),
+                                      foregroundColor: Colors.black,
+                                      padding: const EdgeInsets.symmetric(vertical: 16),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    onPressed: _submitTransaction,
+                                  ),
+                                ),
+                              ],
                             ),
-                          )
-                          : const SizedBox(),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Aktivitas Terkini',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                          ),
+                        ],
                       ),
                     ),
-                    Text(
-                      '${_transactions.length} Item',
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              if (_transactions.isEmpty)
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.account_balance_wallet,
-                        size: 64,
-                        color: Colors.grey.withOpacity(0.5),
-                      ),
-                      const SizedBox(height: 16),
                       Text(
-                        'Belum Ada Transaksi',
+                        'Aktivitas Terkini',
                         style: TextStyle(
-                          color: Colors.grey.withOpacity(0.7),
-                          fontSize: 16,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.onBackground,
                         ),
                       ),
-                      const SizedBox(height: 8),
                       Text(
-                        'Tekan tombol "Tambah" untuk memulai',
+                        '${_transactions.length} Item',
                         style: TextStyle(
-                          color: Colors.grey.withOpacity(0.5),
+                          color: theme.colorScheme.onBackground.withOpacity(0.7),
                           fontSize: 14,
                         ),
                       ),
                     ],
                   ),
-                )
-              else
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: _transactions.length,
-                  itemBuilder: (context, index) {
-                    final transaction = _transactions[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Card(
+                ),
+                const SizedBox(height: 12),
+                if (_transactions.isEmpty)
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.account_balance_wallet,
+                          size: 64,
+                          color: theme.colorScheme.onBackground.withOpacity(0.5),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Belum Ada Transaksi',
+                          style: TextStyle(
+                            color: theme.colorScheme.onBackground.withOpacity(0.7),
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Tekan tombol "Tambah" untuk memulai',
+                          style: TextStyle(
+                            color: theme.colorScheme.onBackground.withOpacity(0.5),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: _transactions.map((transaction) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            color: theme.colorScheme.surface,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      color: theme.colorScheme.secondary.withOpacity(0.2),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Icon(
+                                      Formatters.getCategoryIcon(
+                                        transaction.category,
+                                      ),
+                                      color: theme.colorScheme.secondary,
+                                      size: 24,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          transaction.customDescription ??
+                                              Formatters.getCategoryDisplayName(
+                                                transaction.category,
+                                              ),
+                                          style: TextStyle(
+                                            color: theme.colorScheme.onSurface,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          Formatters.formatDate(transaction.date),
+                                          style: TextStyle(
+                                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Text(
+                                    'Rp ${Formatters.formatCurrency(transaction.amount)}',
+                                    style: TextStyle(
+                                      color: theme.colorScheme.secondary,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                if (_transactions.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.currency_exchange),
+                      label: const Text('Cairkan Dana Sekarang'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.colorScheme.secondary,
+                        foregroundColor: theme.colorScheme.surface,
+                        minimumSize: const Size(double.infinity, 54),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  color: Formatters.getCategoryColor(
-                                    transaction.category,
-                                  ).withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Icon(
-                                  Formatters.getCategoryIcon(
-                                    transaction.category,
-                                  ),
-                                  color: Formatters.getCategoryColor(
-                                    transaction.category,
-                                  ),
-                                  size: 24,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      transaction.customDescription ??
-                                          Formatters.getCategoryDisplayName(
-                                            transaction.category,
-                                          ),
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      Formatters.formatDate(transaction.date),
-                                      style: const TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Text(
-                                'Rp ${Formatters.formatCurrency(transaction.amount)}',
-                                style: const TextStyle(
-                                  color: Color(0xFFD4AF37),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        elevation: 0,
                       ),
-                    );
-                  },
-                ),
-              if (_transactions.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ElevatedButton.icon(
-                    icon: const Icon(Icons.currency_exchange),
-                    label: const Text('Cairkan Dana Sekarang'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFD4AF37),
-                      foregroundColor: Colors.black,
-                      minimumSize: const Size(double.infinity, 54),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 0,
+                      onPressed: _handleReimburse,
                     ),
-                    onPressed: _handleReimburse,
                   ),
-                ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            _isFormVisible = !_isFormVisible;
+          });
+        },
+        backgroundColor: theme.colorScheme.secondary,
+        foregroundColor: themeProvider.isDarkTheme ? Colors.black : theme.colorScheme.surface,
+        elevation: 4,
+        child: Icon(
+          _isFormVisible ? Icons.close : Icons.add,
+          size: 28,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
