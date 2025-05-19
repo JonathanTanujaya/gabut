@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
-import 'package:provider/provider.dart';
 import 'package:try2/dompet/models/reimbursement.dart';
 import '../models/trans.dart';
 import '../services/database_helper.dart';
 import '../utils/formatters.dart';
 import '../widgets/theme_switcher.dart';
-import '../../theme.dart';
 import 'history_screen.dart';
 import 'package:flutter/rendering.dart';
 
@@ -35,7 +33,6 @@ class _HomeScreenState extends State<HomeScreen>
   List<Trans> _transactions = [];
   late TabController _tabController;
   bool _isFormVisible = false;
-  int _selectedIndex = 0;
 
   final List<String> _categories = [
     'OVO',
@@ -106,14 +103,14 @@ class _HomeScreenState extends State<HomeScreen>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Transaksi berhasil ditambahkan'),
-          backgroundColor: Theme.of(context).colorScheme.surface,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
           action: SnackBarAction(
             label: 'OK',
-            textColor: Theme.of(context).colorScheme.secondary,
+            textColor: Theme.of(context).colorScheme.surface,
             onPressed: () {},
           ),
         ),
@@ -131,6 +128,207 @@ class _HomeScreenState extends State<HomeScreen>
       return;
     }
 
+    final theme = Theme.of(context);
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        final total = _calculateTotal();
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          backgroundColor: theme.colorScheme.surface,
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 300),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Header Icon dan Judul
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.secondary,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.receipt,
+                        color: theme.colorScheme.onSecondary,
+                        size: 18,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Konfirmasi\nReimbursement',
+                      style: TextStyle(
+                        color: theme.colorScheme.onSurface,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                // Detail Transaksi Label
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Detail Transaksi',
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurface.withOpacity(0.8),
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // Container untuk transaksi
+                Container(
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceVariant,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        height: (_transactions.length <= 2)
+                          ? _transactions.length * 64.0
+                          : 128.0,
+                        child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          itemCount: _transactions.length,
+                          itemBuilder: (context, i) {
+                            final tx = _transactions[i];
+                            return Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 28,
+                                    height: 28,
+                                    decoration: BoxDecoration(
+                                      color: theme.colorScheme.secondary,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Icon(
+                                      Formatters.getCategoryIcon(tx.category),
+                                      color: theme.colorScheme.onSecondary,
+                                      size: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          tx.customDescription ?? Formatters.getCategoryDisplayName(tx.category),
+                                          style: TextStyle(
+                                            color: theme.colorScheme.onSurface,
+                                            fontSize: 14,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        // Tanggal transaksi
+                                        Text(
+                                          Formatters.formatDate(tx.date),
+                                          style: TextStyle(
+                                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Text(
+                                    'Rp ${Formatters.formatCurrency(tx.amount)}',
+                                    style: TextStyle(
+                                      color: theme.colorScheme.secondary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Total row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Total Reimbursement',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Text(
+                      'Rp ${Formatters.formatCurrency(total)}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: theme.colorScheme.secondary,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                // Buttons
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: theme.colorScheme.secondary),
+                          foregroundColor: theme.colorScheme.secondary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text(
+                          'Batal',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.colorScheme.secondary,
+                          foregroundColor: theme.colorScheme.onSecondary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text(
+                          'Konfirmasi',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (confirm != true) return;
+
     final total = _calculateTotal();
     final history = ReimbursementHistory(
       reimbursementDate: DateTime.now(),
@@ -138,21 +336,22 @@ class _HomeScreenState extends State<HomeScreen>
       transactionIds: _transactions.map((t) => t.id!).toList(),
     );
 
-    await _dbHelper.insertReimbursementHistory(history);    await _dbHelper.markAsReimbursed(_transactions.map((t) => t.id!).toList());
+    await _dbHelper.insertReimbursementHistory(history);
+    await _dbHelper.markAsReimbursed(_transactions.map((t) => t.id!).toList());
     await _loadTransactions();
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Reimbursement berhasil dicatat'),
-          backgroundColor: Theme.of(context).cardColor,
+          backgroundColor: theme.cardColor,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
           action: SnackBarAction(
             label: 'Lihat',
-            textColor: Theme.of(context).colorScheme.primary,
+            textColor: theme.colorScheme.primary,
             onPressed: () {
               Navigator.push(
                 context,
@@ -173,7 +372,6 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     final total = _calculateTotal();
     final theme = Theme.of(context);
-    final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -412,7 +610,7 @@ class _HomeScreenState extends State<HomeScreen>
                                     icon: const Icon(Icons.save),
                                     label: const Text('Simpan Transaksi'),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFFD4AF37),
+                                      backgroundColor: theme.colorScheme.secondary,
                                       foregroundColor: Colors.black,
                                       padding: const EdgeInsets.symmetric(vertical: 16),
                                       shape: RoundedRectangleBorder(
@@ -559,9 +757,8 @@ class _HomeScreenState extends State<HomeScreen>
                 if (_transactions.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.currency_exchange),
-                      label: const Text('Cairkan Dana Sekarang'),
+                    child: ElevatedButton(
+                      child: const Text('Cairkan Dana Sekarang'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.colorScheme.secondary,
                         foregroundColor: theme.colorScheme.surface,
@@ -579,21 +776,6 @@ class _HomeScreenState extends State<HomeScreen>
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            _isFormVisible = !_isFormVisible;
-          });
-        },
-        backgroundColor: theme.colorScheme.secondary,
-        foregroundColor: themeProvider.isDarkTheme ? Colors.black : theme.colorScheme.surface,
-        elevation: 4,
-        child: Icon(
-          _isFormVisible ? Icons.close : Icons.add,
-          size: 28,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

@@ -7,7 +7,7 @@ import 'package:try2/gas/widgets/empty_state.dart';
 import 'package:try2/gas/widgets/log_item.dart';
 import 'package:try2/gas/widgets/stat_card.dart';
 import 'package:try2/theme.dart';
-import '../../main.dart';
+
 
 class GasHomeScreen extends StatelessWidget {
   const GasHomeScreen({super.key});

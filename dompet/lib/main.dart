@@ -4,7 +4,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:try2/gas/models/gas_log.dart';
 import 'package:try2/theme.dart';
-import 'package:try2/theme.dart';
 
 import 'package:try2/gas/screen/beranda.dart';
 import 'package:try2/dompet/screens/home_screen.dart';
@@ -72,6 +71,7 @@ class _MainNavigationState extends State<MainNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -83,11 +83,11 @@ class _MainNavigationState extends State<MainNavigation> {
             child: Container(
               height: 70,
               decoration: BoxDecoration(
-                color: const Color(0xFF1A1A1A),
+                color: theme.colorScheme.surfaceVariant,
                 borderRadius: BorderRadius.circular(35),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.5),
+                    color: theme.shadowColor.withOpacity(0.5),
                     blurRadius: 10,
                     offset: const Offset(0, 5),
                   ),
@@ -121,6 +121,9 @@ class _MainNavigationState extends State<MainNavigation> {
     required int index,
   }) {
     final isSelected = _currentIndex == index;
+    final theme = Theme.of(context);
+    final selectedColor = theme.colorScheme.secondary;
+    final unselectedColor = theme.unselectedWidgetColor;
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -132,14 +135,14 @@ class _MainNavigationState extends State<MainNavigation> {
         children: [
           Icon(
             icon,
-            color: isSelected ? const Color(0xFFD4AF37) : Colors.white70,
+            color: isSelected ? selectedColor : unselectedColor,
             size: isSelected ? 28 : 24,
           ),
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
-              color: isSelected ? const Color(0xFFD4AF37) : Colors.white70,
+              color: isSelected ? selectedColor : unselectedColor,
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
