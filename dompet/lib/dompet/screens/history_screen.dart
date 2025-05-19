@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:try2/dompet/models/reimbursement.dart';
-import 'package:try2/dompet/screens/histor_detail_screen.dart';
-
-import '../services/database_helper.dart';
+import '../models/reimbursement.dart';
 import '../utils/formatters.dart';
+import 'histor_detail_screen.dart';
+import '../services/database_helper.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
-      appBar: AppBar(title: const Text('Catatan Reimburse'), elevation: 0),
+      appBar: AppBar(
+        title: const Text('Catatan Reimburse'),
+        elevation: 0,
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Theme.of(context).scaffoldBackgroundColor,
-              Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+              theme.scaffoldBackgroundColor,
+              theme.scaffoldBackgroundColor.withOpacity(0.95),
             ],
           ),
         ),
@@ -27,8 +31,10 @@ class HistoryScreen extends StatelessWidget {
           future: DatabaseHelper().getAllReimbursementHistory(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(color: Color(0xFFD4AF37)),
+              return Center(
+                child: CircularProgressIndicator(
+                  color: theme.colorScheme.primary,
+                ),
               );
             }
 
@@ -40,14 +46,14 @@ class HistoryScreen extends StatelessWidget {
                     Icon(
                       Icons.history,
                       size: 72,
-                      color: Colors.grey.withOpacity(0.5),
+                      color: theme.colorScheme.onSurface.withOpacity(0.5),
                     ),
                     const SizedBox(height: 16),
                     Text(
                       'Belum Ada Catatan Reimburse',
                       style: TextStyle(
                         fontSize: 18,
-                        color: Colors.grey.withOpacity(0.7),
+                        color: theme.colorScheme.onSurface.withOpacity(0.7),
                       ),
                     ),
                   ],
@@ -55,10 +61,8 @@ class HistoryScreen extends StatelessWidget {
               );
             }
 
-            final histories =
-                snapshot.data!..sort(
-                  (a, b) => b.reimbursementDate.compareTo(a.reimbursementDate),
-                );
+            final histories = snapshot.data!
+              ..sort((a, b) => b.reimbursementDate.compareTo(a.reimbursementDate));
 
             return ListView.builder(
               padding: const EdgeInsets.all(16),
@@ -70,100 +74,56 @@ class HistoryScreen extends StatelessWidget {
                   child: Card(
                     clipBehavior: Clip.antiAlias,
                     child: InkWell(
-                      onTap:
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) =>
-                                      HistoryDetailScreen(history: history),
-                            ),
-                          ),
-                      splashColor: const Color(0xFFD4AF37).withOpacity(0.1),
-                      highlightColor: const Color(0xFFD4AF37).withOpacity(0.05),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HistoryDetailScreen(history: history),
+                        ),
+                      ),
+                      splashColor: theme.colorScheme.primary.withOpacity(0.1),
+                      highlightColor: theme.colorScheme.primary.withOpacity(0.05),
                       child: Column(
                         children: [
                           Container(
                             width: double.infinity,
-                            color: const Color(0xFF1A1A1A),
+                            color: theme.cardColor,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 20,
                               vertical: 12,
                             ),
                             child: Row(
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.currency_exchange,
-                                  color: Color(0xFFD4AF37),
+                                  color: theme.colorScheme.primary,
                                 ),
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
-                                        'Reimburse Selesai',
-                                        style: TextStyle(
-                                          color: Colors.white70,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 2),
                                       Text(
-                                        Formatters.formatDate(
-                                          history.reimbursementDate,
-                                        ),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Total Dana',
+                                        'Reimburse ${Formatters.formatDate(history.reimbursementDate)}',
                                         style: TextStyle(
-                                          color: Colors.white70,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        'Rp ${Formatters.formatCurrency(history.totalAmount)}',
-                                        style: const TextStyle(
-                                          color: Color(0xFFD4AF37),
-                                          fontSize: 20,
+                                          color: theme.colorScheme.onSurface,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
+                                      Text(
+                                        '${history.transactionIds.length} Transaksi',
+                                        style: TextStyle(
+                                          color: theme.colorScheme.onSurface.withOpacity(0.7),
+                                          fontSize: 12,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
-                                Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF2A2A2A),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: const Icon(
-                                    Icons.arrow_forward,
-                                    color: Color(0xFFD4AF37),
-                                    size: 20,
+                                Text(
+                                  Formatters.formatCurrency(history.totalAmount),
+                                  style: TextStyle(
+                                    color: theme.colorScheme.primary,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ],

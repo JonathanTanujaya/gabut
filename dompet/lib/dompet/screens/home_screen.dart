@@ -45,8 +45,6 @@ class _HomeScreenState extends State<HomeScreen>
     'Kursus',
     'Lainnya',
   ];
-  
-
 
   @override
   void initState() {
@@ -126,186 +124,49 @@ class _HomeScreenState extends State<HomeScreen>
   Future<void> _handleReimburse() async {
     if (_transactions.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Tidak ada transaksi untuk dicairkan'),
-          backgroundColor: Colors.grey[900],
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
+        const SnackBar(
+          content: Text('Tidak ada transaksi untuk direimbursement'),
         ),
       );
       return;
     }
 
-    final total = _transactions.fold(0.0, (sum, t) => sum + t.amount);
-
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            backgroundColor: const Color(0xFF1A1A1A),
-            title: const Text(
-              'Konfirmasi Pencairan',
-              style: TextStyle(
-                color: Color(0xFFD4AF37),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            content: SizedBox(
-              width: double.maxFinite,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Card(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    color: const Color(0xFF252525),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          const Text(
-                            'Total Dana',
-                            style: TextStyle(color: Colors.white70),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Rp ${Formatters.formatCurrency(total)}',
-                            style: const TextStyle(
-                              color: Color(0xFFD4AF37),
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const Divider(color: Color(0xFF333333)),
-                  const SizedBox(height: 8),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Daftar Transaksi',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Flexible(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _transactions.length,
-                      itemBuilder: (context, index) {
-                        final t = _transactions[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 36,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  color: Formatters.getCategoryColor(
-                                    t.category,
-                                  ).withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Icon(
-                                  Formatters.getCategoryIcon(t.category),
-                                  color: Formatters.getCategoryColor(
-                                    t.category,
-                                  ),
-                                  size: 18,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  t.customDescription ??
-                                      Formatters.getCategoryDisplayName(
-                                        t.category,
-                                      ),
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              Text(
-                                'Rp ${Formatters.formatCurrency(t.amount)}',
-                                style: const TextStyle(
-                                  color: Color(0xFFD4AF37),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Batal'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  final history = ReimbursementHistory(
-                    reimbursementDate: DateTime.now(),
-                    totalAmount: total,
-                    transactionIds: _transactions.map((t) => t.id!).toList(),
-                  );
-
-                  await _dbHelper.insertReimbursementHistory(history);
-                  await _dbHelper.markAsReimbursed(
-                    _transactions.map((t) => t.id!).toList(),
-                  );
-
-                  Navigator.popUntil(context, (route) => route.isFirst);
-                  await _loadTransactions();
-
-                  // Show confirmation
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Dana berhasil dicairkan'),
-                      backgroundColor: Colors.grey[900],
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      action: SnackBarAction(
-                        label: 'Lihat Riwayat',
-                        textColor: const Color(0xFFD4AF37),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HistoryScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  );
-                },
-                child: const Text('Konfirmasi'),
-              ),
-            ],
-          ),
+    final total = _calculateTotal();
+    final history = ReimbursementHistory(
+      reimbursementDate: DateTime.now(),
+      totalAmount: total,
+      transactionIds: _transactions.map((t) => t.id!).toList(),
     );
+
+    await _dbHelper.insertReimbursementHistory(history);    await _dbHelper.markAsReimbursed(_transactions.map((t) => t.id!).toList());
+    await _loadTransactions();
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Reimbursement berhasil dicatat'),
+          backgroundColor: Theme.of(context).cardColor,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          action: SnackBarAction(
+            label: 'Lihat',
+            textColor: Theme.of(context).colorScheme.primary,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const HistoryScreen()),
+              );
+            },
+          ),
+        ),
+      );
+    }
   }
 
   double _calculateTotal() {
-    if (_transactions.isEmpty) return 0;
-    return _transactions.fold(0.0, (sum, tx) => sum + tx.amount);
+    return _transactions.fold(0, (sum, tx) => sum + tx.amount);
   }
 
   @override
@@ -342,6 +203,12 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ),
           ),
+          if (_transactions.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.currency_exchange),
+              onPressed: _handleReimburse,
+              tooltip: 'Reimburse',
+            ),
         ],
       ),
       body: SingleChildScrollView(
