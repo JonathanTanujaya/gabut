@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class EmptyState extends StatelessWidget {
   const EmptyState({super.key});
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -12,7 +12,7 @@ class EmptyState extends StatelessWidget {
           Icon(
             Icons.local_gas_station,
             size: 80,
-            color: Colors.grey[400],
+            color: theme.colorScheme.onSurface.withOpacity(0.4),
           ),
           const SizedBox(height: 16),
           Text(
@@ -20,14 +20,14 @@ class EmptyState extends StatelessWidget {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
+              color: theme.colorScheme.onSurface.withOpacity(0.6),
             ),
           ),
           const SizedBox(height: 8),
           Text(
             "Tekan tombol + untuk menambah catatan baru",
             style: TextStyle(
-              color: Colors.grey[500],
+              color: theme.colorScheme.onSurface.withOpacity(0.5),
             ),
           ),
         ],

@@ -6,7 +6,7 @@ class ThemeProvider with ChangeNotifier {
   static const String _themeKey = 'theme_index';
 
   final List<ThemeData> _themes = [
-    // Theme 1: Dark Gold Theme
+    // Theme 1: Dark Gold Theme (tetap sama)
     ThemeData(
       useMaterial3: true,
       primaryColor: Color(0xFFD4AF37),
@@ -124,69 +124,71 @@ class ThemeProvider with ChangeNotifier {
       ),
     ),
 
-    // Theme 2: Navy Blue Theme
+    // Theme 2: Midnight Blue & Coral (diperbaiki)
     ThemeData(
       useMaterial3: true,
-      primaryColor: Color(0xFF0A386B),
-      scaffoldBackgroundColor: Color(0xFF0A386B),
-      cardColor: Color(0xFF072B52),
-      dialogBackgroundColor: Color(0xFF154B88),
-      dividerColor: Color(0xFF1E5EA6),
+      primaryColor: Color(0xFF1A237E), // Deep indigo blue
+      scaffoldBackgroundColor: Color(0xFF0D1421), // Very dark blue-grey
+      cardColor: Color(0xFF1E2A3A), // Dark blue-grey
+      dialogBackgroundColor: Color(0xFF263548), // Medium blue-grey
+      dividerColor: Color(0xFF37474F),
       colorScheme: ColorScheme.dark(
-        primary: Color(0xFF0A386B),
-        secondary: Color(0xFFB22234),
-        tertiary: Color(0xFF3B5998),
-        surface: Color(0xFF072B52),
-        background: Color(0xFF0A386B),
-        error: Colors.red[700]!,
+        primary: Color(0xFF1A237E),
+        secondary: Color(0xFFFF6B6B), // Warm coral
+        tertiary: Color(0xFF3949AB),
+        surface: Color(0xFF1E2A3A),
+        background: Color(0xFF0D1421),
+        error: Color(0xFFFF5252),
+        onBackground: Colors.white,
+        onSurface: Colors.white,
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: Color(0xFF0A386B),
-        foregroundColor: Color(0xFFB22234),
+        backgroundColor: Color(0xFF1E2A3A),
+        foregroundColor: Color(0xFFFF6B6B),
         elevation: 0,
         centerTitle: true,
         titleTextStyle: TextStyle(
-          color: Color(0xFFB22234),
+          color: Color(0xFFFF6B6B),
           fontSize: 22,
           fontWeight: FontWeight.bold,
         ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: Color(0xFF0A386B),
-        selectedItemColor: Color(0xFFB22234),
+        backgroundColor: Color(0xFF1E2A3A),
+        selectedItemColor: Color(0xFFFF6B6B),
         unselectedItemColor: Colors.white70,
       ),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: Color(0xFF154B88),
-        actionTextColor: Color(0xFFB22234),
+        backgroundColor: Color(0xFF263548),
+        actionTextColor: Color(0xFFFF6B6B),
         contentTextStyle: TextStyle(color: Colors.white),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Color(0xFF154B88),
-        labelStyle: TextStyle(color: Colors.white),
-        prefixIconColor: Colors.white,
-        suffixIconColor: Colors.white,
+        fillColor: Color(0xFF263548),
+        labelStyle: TextStyle(color: Color(0xFFB0BEC5)),
+        prefixIconColor: Color(0xFFFF6B6B),
+        suffixIconColor: Color(0xFFFF6B6B),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xFF1E5EA6)),
+          borderSide: BorderSide(color: Color(0xFF37474F)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xFF1E5EA6)),
+          borderSide: BorderSide(color: Color(0xFF37474F)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xFFB22234), width: 2),
+          borderSide: BorderSide(color: Color(0xFFFF6B6B), width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.red[700]!),
+          borderSide: BorderSide(color: Color(0xFFFF5252)),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFFB22234),
+          backgroundColor: Color(0xFFFF6B6B),
           foregroundColor: Colors.white,
           elevation: 0,
           padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
@@ -201,37 +203,37 @@ class ThemeProvider with ChangeNotifier {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: Color(0xFFB22234),
+          foregroundColor: Color(0xFFFF6B6B),
         ),
       ),
       iconTheme: IconThemeData(
-        color: Color(0xFFB22234),
+        color: Color(0xFFFF6B6B),
       ),
       textTheme: TextTheme(
-        titleLarge: TextStyle(color: Color(0xFFB22234), fontWeight: FontWeight.bold),
-        titleMedium: TextStyle(color: Color(0xFFB22234), fontWeight: FontWeight.bold),
+        titleLarge: TextStyle(color: Color(0xFFFF6B6B), fontWeight: FontWeight.bold),
+        titleMedium: TextStyle(color: Color(0xFFFF6B6B), fontWeight: FontWeight.bold),
         bodyLarge: TextStyle(color: Colors.white),
-        bodyMedium: TextStyle(color: Colors.white70),
+        bodyMedium: TextStyle(color: Color(0xFFB0BEC5)),
       ),
       switchTheme: SwitchThemeData(
         thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return Color(0xFFB22234);
+          if (states.contains(MaterialState.selected)) return Color(0xFFFF6B6B);
           return Colors.grey;
         }),
         trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return Color(0xFFB22234).withOpacity(0.5);
+          if (states.contains(MaterialState.selected)) return Color(0xFFFF6B6B).withOpacity(0.5);
           return Colors.grey.withOpacity(0.5);
         }),
       ),
       checkboxTheme: CheckboxThemeData(
         fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return Color(0xFFB22234);
+          if (states.contains(MaterialState.selected)) return Color(0xFFFF6B6B);
           return Colors.grey;
         }),
         checkColor: MaterialStateProperty.all(Colors.white),
       ),
       cardTheme: CardTheme(
-        color: Color(0xFF154B88),
+        color: Color(0xFF263548),
         elevation: 4,
         margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         shape: RoundedRectangleBorder(
@@ -240,69 +242,307 @@ class ThemeProvider with ChangeNotifier {
       ),
     ),
 
-    // Theme 3: Purple Theme
+    // Theme 3: Deep Purple & Electric Blue (modern purple theme)
     ThemeData(
       useMaterial3: true,
-      primaryColor: Color(0xFF6A1B9A),
-      scaffoldBackgroundColor: Color(0xFF6A1B9A),
-      cardColor: Color(0xFF4A148C),
-      dialogBackgroundColor: Color(0xFF8E24AA),
-      dividerColor: Color(0xFFAB47BC),
+      primaryColor: Color(0xFF2D1B69), // Deep purple
+      scaffoldBackgroundColor: Color(0xFF1A0E4E), // Very dark purple
+      cardColor: Color(0xFF2A1B5E), // Dark purple
+      dialogBackgroundColor: Color(0xFF3C2B7A), // Medium purple
+      dividerColor: Color(0xFF4A3A8A),
       colorScheme: ColorScheme.dark(
-        primary: Color(0xFF6A1B9A),
-        secondary: Color(0xFF00B8D4),
-        tertiary: Color(0xFF9C27B0),
-        surface: Color(0xFF4A148C),
-        background: Color(0xFF6A1B9A),
-        error: Colors.red,
+        primary: Color(0xFF2D1B69),
+        secondary: Color(0xFF00D4FF), // Electric blue
+        tertiary: Color(0xFF7C4DFF),
+        surface: Color(0xFF2A1B5E),
+        background: Color(0xFF1A0E4E),
+        error: Color(0xFFFF4081),
+        onBackground: Colors.white,
+        onSurface: Colors.white,
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: Color(0xFF6A1B9A),
-        foregroundColor: Color(0xFF00B8D4),
+        backgroundColor: Color(0xFF2A1B5E),
+        foregroundColor: Color(0xFF00D4FF),
         elevation: 0,
         centerTitle: true,
         titleTextStyle: TextStyle(
-          color: Color(0xFF00B8D4),
+          color: Color(0xFF00D4FF),
           fontSize: 22,
           fontWeight: FontWeight.bold,
         ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: Color(0xFF6A1B9A),
-        selectedItemColor: Color(0xFF00B8D4),
+        backgroundColor: Color(0xFF2A1B5E),
+        selectedItemColor: Color(0xFF00D4FF),
         unselectedItemColor: Colors.white70,
       ),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: Color(0xFF8E24AA),
-        actionTextColor: Color(0xFF00B8D4),
+        backgroundColor: Color(0xFF3C2B7A),
+        actionTextColor: Color(0xFF00D4FF),
         contentTextStyle: TextStyle(color: Colors.white),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Color(0xFF8E24AA),
-        labelStyle: TextStyle(color: Colors.white),
-        prefixIconColor: Colors.white,
-        suffixIconColor: Colors.white,
+        fillColor: Color(0xFF3C2B7A),
+        labelStyle: TextStyle(color: Color(0xFFB19CD9)),
+        prefixIconColor: Color(0xFF00D4FF),
+        suffixIconColor: Color(0xFF00D4FF),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xFFAB47BC)),
+          borderSide: BorderSide(color: Color(0xFF4A3A8A)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xFFAB47BC)),
+          borderSide: BorderSide(color: Color(0xFF4A3A8A)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xFF00B8D4), width: 2),
+          borderSide: BorderSide(color: Color(0xFF00D4FF), width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.red),
+          borderSide: BorderSide(color: Color(0xFFFF4081)),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFF00B8D4),
+          backgroundColor: Color(0xFF00D4FF),
+          foregroundColor: Color(0xFF1A0E4E),
+          elevation: 0,
+          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: Color(0xFF00D4FF),
+        ),
+      ),
+      iconTheme: IconThemeData(
+        color: Color(0xFF00D4FF),
+      ),
+      textTheme: TextTheme(
+        titleLarge: TextStyle(color: Color(0xFF00D4FF), fontWeight: FontWeight.bold),
+        titleMedium: TextStyle(color: Color(0xFF00D4FF), fontWeight: FontWeight.bold),
+        bodyLarge: TextStyle(color: Colors.white),
+        bodyMedium: TextStyle(color: Color(0xFFB19CD9)),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.selected)) return Color(0xFF00D4FF);
+          return Colors.grey;
+        }),
+        trackColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.selected)) return Color(0xFF00D4FF).withOpacity(0.5);
+          return Colors.grey.withOpacity(0.5);
+        }),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.selected)) return Color(0xFF00D4FF);
+          return Colors.grey;
+        }),
+        checkColor: MaterialStateProperty.all(Color(0xFF1A0E4E)),
+      ),
+      cardTheme: CardTheme(
+        color: Color(0xFF3C2B7A),
+        elevation: 4,
+        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+    ),
+
+    // Theme 4: Forest Green & Amber (earthy nature theme)
+    ThemeData(
+      useMaterial3: true,
+      primaryColor: Color(0xFF1B5E20), // Forest green
+      scaffoldBackgroundColor: Color(0xFF0D2818), // Very dark green
+      cardColor: Color(0xFF1C3A2E), // Dark green-grey
+      dialogBackgroundColor: Color(0xFF2E5D3E), // Medium green
+      dividerColor: Color(0xFF4CAF50),
+      colorScheme: ColorScheme.dark(
+        primary: Color(0xFF1B5E20),
+        secondary: Color(0xFFFFC107), // Warm amber
+        tertiary: Color(0xFF388E3C),
+        surface: Color(0xFF1C3A2E),
+        background: Color(0xFF0D2818),
+        error: Color(0xFFFF5722),
+        onBackground: Colors.white,
+        onSurface: Colors.white,
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: Color(0xFF1C3A2E),
+        foregroundColor: Color(0xFFFFC107),
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: TextStyle(
+          color: Color(0xFFFFC107),
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: Color(0xFF1C3A2E),
+        selectedItemColor: Color(0xFFFFC107),
+        unselectedItemColor: Colors.white70,
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: Color(0xFF2E5D3E),
+        actionTextColor: Color(0xFFFFC107),
+        contentTextStyle: TextStyle(color: Colors.white),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Color(0xFF2E5D3E),
+        labelStyle: TextStyle(color: Color(0xFFA5D6A7)),
+        prefixIconColor: Color(0xFFFFC107),
+        suffixIconColor: Color(0xFFFFC107),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFF4CAF50)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFF4CAF50)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFFFFC107), width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFFFF5722)),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFFFFC107),
+          foregroundColor: Color(0xFF0D2818),
+          elevation: 0,
+          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: Color(0xFFFFC107),
+        ),
+      ),
+      iconTheme: IconThemeData(
+        color: Color(0xFFFFC107),
+      ),
+      textTheme: TextTheme(
+        titleLarge: TextStyle(color: Color(0xFFFFC107), fontWeight: FontWeight.bold),
+        titleMedium: TextStyle(color: Color(0xFFFFC107), fontWeight: FontWeight.bold),
+        bodyLarge: TextStyle(color: Colors.white),
+        bodyMedium: TextStyle(color: Color(0xFFA5D6A7)),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.selected)) return Color(0xFFFFC107);
+          return Colors.grey;
+        }),
+        trackColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.selected)) return Color(0xFFFFC107).withOpacity(0.5);
+          return Colors.grey.withOpacity(0.5);
+        }),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.selected)) return Color(0xFFFFC107);
+          return Colors.grey;
+        }),
+        checkColor: MaterialStateProperty.all(Color(0xFF0D2818)),
+      ),
+      cardTheme: CardTheme(
+        color: Color(0xFF2E5D3E),
+        elevation: 4,
+        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+    ),
+
+    // Theme 5: Rose Gold & Slate (elegant modern theme)
+    ThemeData(
+      useMaterial3: true,
+      primaryColor: Color(0xFF37474F), // Blue grey
+      scaffoldBackgroundColor: Color(0xFF1C2025), // Very dark grey
+      cardColor: Color(0xFF2D3135), // Dark grey
+      dialogBackgroundColor: Color(0xFF3C4145), // Medium grey
+      dividerColor: Color(0xFF4A5055),
+      colorScheme: ColorScheme.dark(
+        primary: Color(0xFF37474F),
+        secondary: Color(0xFFE91E63), // Rose pink
+        tertiary: Color(0xFF546E7A),
+        surface: Color(0xFF2D3135),
+        background: Color(0xFF1C2025),
+        error: Color(0xFFFF6B6B),
+        onBackground: Colors.white,
+        onSurface: Colors.white,
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: Color(0xFF2D3135),
+        foregroundColor: Color(0xFFE91E63),
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: TextStyle(
+          color: Color(0xFFE91E63),
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: Color(0xFF2D3135),
+        selectedItemColor: Color(0xFFE91E63),
+        unselectedItemColor: Colors.white70,
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: Color(0xFF3C4145),
+        actionTextColor: Color(0xFFE91E63),
+        contentTextStyle: TextStyle(color: Colors.white),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Color(0xFF3C4145),
+        labelStyle: TextStyle(color: Color(0xFFB0BEC5)),
+        prefixIconColor: Color(0xFFE91E63),
+        suffixIconColor: Color(0xFFE91E63),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFF4A5055)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFF4A5055)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFFE91E63), width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFFFF6B6B)),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFFE91E63),
           foregroundColor: Colors.white,
           elevation: 0,
           padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
@@ -317,269 +557,37 @@ class ThemeProvider with ChangeNotifier {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: Color(0xFF00B8D4),
+          foregroundColor: Color(0xFFE91E63),
         ),
       ),
       iconTheme: IconThemeData(
-        color: Color(0xFF00B8D4),
+        color: Color(0xFFE91E63),
       ),
       textTheme: TextTheme(
-        titleLarge: TextStyle(color: Color(0xFF00B8D4), fontWeight: FontWeight.bold),
-        titleMedium: TextStyle(color: Color(0xFF00B8D4), fontWeight: FontWeight.bold),
+        titleLarge: TextStyle(color: Color(0xFFE91E63), fontWeight: FontWeight.bold),
+        titleMedium: TextStyle(color: Color(0xFFE91E63), fontWeight: FontWeight.bold),
         bodyLarge: TextStyle(color: Colors.white),
-        bodyMedium: TextStyle(color: Colors.white70),
+        bodyMedium: TextStyle(color: Color(0xFFB0BEC5)),
       ),
       switchTheme: SwitchThemeData(
         thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return Color(0xFF00B8D4);
+          if (states.contains(MaterialState.selected)) return Color(0xFFE91E63);
           return Colors.grey;
         }),
         trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return Color(0xFF00B8D4).withOpacity(0.5);
+          if (states.contains(MaterialState.selected)) return Color(0xFFE91E63).withOpacity(0.5);
           return Colors.grey.withOpacity(0.5);
         }),
       ),
       checkboxTheme: CheckboxThemeData(
         fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return Color(0xFF00B8D4);
+          if (states.contains(MaterialState.selected)) return Color(0xFFE91E63);
           return Colors.grey;
         }),
         checkColor: MaterialStateProperty.all(Colors.white),
       ),
       cardTheme: CardTheme(
-        color: Color(0xFF8E24AA),
-        elevation: 4,
-        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-      ),
-    ),
-
-    // Theme 4: Teal Theme
-    ThemeData(
-      useMaterial3: true,
-      primaryColor: Color(0xFF009688),
-      scaffoldBackgroundColor: Color(0xFF009688),
-      cardColor: Color(0xFF00695C),
-      dialogBackgroundColor: Color(0xFF00897B),
-      dividerColor: Color(0xFF26A69A),
-      colorScheme: ColorScheme.dark(
-        primary: Color(0xFF009688),
-        secondary: Color(0xFFFF6D00),
-        tertiary: Color(0xFF26A69A),
-        surface: Color(0xFF00695C),
-        background: Color(0xFF009688),
-        error: Colors.red,
-      ),
-      appBarTheme: AppBarTheme(
-        backgroundColor: Color(0xFF009688),
-        foregroundColor: Color(0xFFFF6D00),
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: TextStyle(
-          color: Color(0xFFFF6D00),
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: Color(0xFF009688),
-        selectedItemColor: Color(0xFFFF6D00),
-        unselectedItemColor: Colors.white70,
-      ),
-      snackBarTheme: SnackBarThemeData(
-        backgroundColor: Color(0xFF00897B),
-        actionTextColor: Color(0xFFFF6D00),
-        contentTextStyle: TextStyle(color: Colors.white),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: Color(0xFF00897B),
-        labelStyle: TextStyle(color: Colors.white),
-        prefixIconColor: Colors.white,
-        suffixIconColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xFF26A69A)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xFF26A69A)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xFFFF6D00), width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.red),
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFFFF6D00),
-          foregroundColor: Colors.white,
-          elevation: 0,
-          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          textStyle: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: Color(0xFFFF6D00),
-        ),
-      ),
-      iconTheme: IconThemeData(
-        color: Color(0xFFFF6D00),
-      ),
-      textTheme: TextTheme(
-        titleLarge: TextStyle(color: Color(0xFFFF6D00), fontWeight: FontWeight.bold),
-        titleMedium: TextStyle(color: Color(0xFFFF6D00), fontWeight: FontWeight.bold),
-        bodyLarge: TextStyle(color: Colors.white),
-        bodyMedium: TextStyle(color: Colors.white70),
-      ),
-      switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return Color(0xFFFF6D00);
-          return Colors.grey;
-        }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return Color(0xFFFF6D00).withOpacity(0.5);
-          return Colors.grey.withOpacity(0.5);
-        }),
-      ),
-      checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return Color(0xFFFF6D00);
-          return Colors.grey;
-        }),
-        checkColor: MaterialStateProperty.all(Colors.white),
-      ),
-      cardTheme: CardTheme(
-        color: Color(0xFF00897B),
-        elevation: 4,
-        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-      ),
-    ),
-
-    // Theme 5: Dark Emerald Theme
-    ThemeData(
-      useMaterial3: true,
-      primaryColor: Color(0xFF006D5B),
-      scaffoldBackgroundColor: Color(0xFF006D5B),
-      cardColor: Color(0xFF004D40),
-      dialogBackgroundColor: Color(0xFF00806A),
-      dividerColor: Color(0xFF009688),
-      colorScheme: ColorScheme.dark(
-        primary: Color(0xFF006D5B),
-        secondary: Color(0xFFC0C0C0),
-        tertiary: Color(0xFF00846C),
-        surface: Color(0xFF004D40),
-        background: Color(0xFF006D5B),
-        error: Colors.red,
-      ),
-      appBarTheme: AppBarTheme(
-        backgroundColor: Color(0xFF006D5B),
-        foregroundColor: Color(0xFFC0C0C0),
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: TextStyle(
-          color: Color(0xFFC0C0C0),
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: Color(0xFF006D5B),
-        selectedItemColor: Color(0xFFC0C0C0),
-        unselectedItemColor: Colors.white70,
-      ),
-      snackBarTheme: SnackBarThemeData(
-        backgroundColor: Color(0xFF00806A),
-        actionTextColor: Color(0xFFC0C0C0),
-        contentTextStyle: TextStyle(color: Colors.white),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: Color(0xFF00806A),
-        labelStyle: TextStyle(color: Colors.white),
-        prefixIconColor: Colors.white,
-        suffixIconColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xFF009688)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xFF009688)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xFFC0C0C0), width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.red),
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFFC0C0C0),
-          foregroundColor: Color(0xFF006D5B),
-          elevation: 0,
-          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          textStyle: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: Color(0xFFC0C0C0),
-        ),
-      ),
-      iconTheme: IconThemeData(
-        color: Color(0xFFC0C0C0),
-      ),
-      textTheme: TextTheme(
-        titleLarge: TextStyle(color: Color(0xFFC0C0C0), fontWeight: FontWeight.bold),
-        titleMedium: TextStyle(color: Color(0xFFC0C0C0), fontWeight: FontWeight.bold),
-        bodyLarge: TextStyle(color: Colors.white),
-        bodyMedium: TextStyle(color: Colors.white70),
-      ),
-      switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return Color(0xFFC0C0C0);
-          return Colors.grey;
-        }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return Color(0xFFC0C0C0).withOpacity(0.5);
-          return Colors.grey.withOpacity(0.5);
-        }),
-      ),
-      checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return Color(0xFFC0C0C0);
-          return Colors.grey;
-        }),
-        checkColor: MaterialStateProperty.all(Color(0xFF006D5B)),
-      ),
-      cardTheme: CardTheme(
-        color: Color(0xFF00806A),
+        color: Color(0xFF3C4145),
         elevation: 4,
         margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         shape: RoundedRectangleBorder(
@@ -589,45 +597,52 @@ class ThemeProvider with ChangeNotifier {
     ),
   ];
 
-  // Theme icons and colors for the theme switcher
+  // Theme icons and colors for the theme switcher (updated)
   final List<IconData> _themeIcons = [
-    Icons.nights_stay,
-    Icons.brightness_5,
-    Icons.spa,
-    Icons.wb_twilight,
-    Icons.forest,
+    Icons.nights_stay, // Dark Gold
+    Icons.water, // Midnight Blue
+    Icons.auto_awesome, // Deep Purple
+    Icons.eco, // Forest Green
+    Icons.favorite, // Rose Gold
   ];
 
   final List<Color> _themeIconColors = [
-    Color(0xFFD4AF37),  // Gold
-    Color(0xFF0A386B),  // Navy Blue
-    Color(0xFF6A1B9A),  // Purple
-    Color(0xFF009688),  // Teal
-    Color(0xFF006D5B),  // Emerald
+    Color(0xFFD4AF37), // Gold
+    Color(0xFF1A237E), // Deep indigo
+    Color(0xFF2D1B69), // Deep purple
+    Color(0xFF1B5E20), // Forest green
+    Color(0xFF37474F), // Blue grey
   ];
 
   final List<Color> _themeAccentColors = [
-    Color(0xFFD4AF37),  // Gold accent
-    Color(0xFFB22234),  // Red accent
-    Color(0xFF00B8D4),  // Teal accent
-    Color(0xFFFF6D00),  // Orange accent
-    Color(0xFFC0C0C0),  // Silver accent
+    Color(0xFFD4AF37), // Gold accent
+    Color(0xFFFF6B6B), // Coral accent
+    Color(0xFF00D4FF), // Electric blue accent
+    Color(0xFFFFC107), // Amber accent
+    Color(0xFFE91E63), // Rose pink accent
   ];
 
   ThemeProvider() {
     _loadThemePreference();
   }
-
   ThemeData get theme => _themes[_currentThemeIndex];
+  int get currentThemeIndex => _currentThemeIndex;
   IconData get themeIcon => _themeIcons[_currentThemeIndex];
   Color get themeIconColor => _themeIconColors[_currentThemeIndex];
   Color get themeAccentColor => _themeAccentColors[_currentThemeIndex];
   bool get isDarkTheme => _currentThemeIndex == 0;
-
   void nextTheme() {
     _currentThemeIndex = (_currentThemeIndex + 1) % _themes.length;
     _saveThemePreference();
     notifyListeners();
+  }
+
+  void setTheme(int index) {
+    if (index >= 0 && index < _themes.length) {
+      _currentThemeIndex = index;
+      _saveThemePreference();
+      notifyListeners();
+    }
   }
 
   Future<void> _saveThemePreference() async {

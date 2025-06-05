@@ -8,9 +8,9 @@ import '../widgets/empty_state.dart';
 
 class GasStatsScreen extends StatelessWidget {
   const GasStatsScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final gasService = Provider.of<GasLogService>(context);
     final cache = gasService.cache;
 
@@ -29,12 +29,12 @@ class GasStatsScreen extends StatelessWidget {
                     StatsSummary(logs: logs),
 
                     const SizedBox(height: 20),
-                    const Text(
+                    Text(
                       "Efisiensi Konsumsi (km/L)",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -42,12 +42,12 @@ class GasStatsScreen extends StatelessWidget {
                       logs: logs.where((log) => log.kmPerLiter > 0).toList(),
                     ),
                     const SizedBox(height: 20),
-                    const Text(
+                    Text(
                       "Biaya Bensin (Rp)",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 10),

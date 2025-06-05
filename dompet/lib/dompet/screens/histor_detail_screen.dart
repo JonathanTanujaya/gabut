@@ -41,19 +41,36 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
     }
     return data;
   }
-
   // Calculate percentages for pie chart
   List<Map<String, dynamic>> getCategoryPercentages() {
     final Map<String, double> totals = getCategoryTotals();
     final double sum = totals.values.fold(0, (a, b) => a + b);
 
+    // Generate consistent colors based on theme
+    final theme = Theme.of(context);
+    final baseColor = theme.colorScheme.secondary;
+    
+    // Create color variations based on secondary color
+    final colors = [
+      baseColor,
+      baseColor.withOpacity(0.8),
+      baseColor.withOpacity(0.6),
+      baseColor.withOpacity(0.4),
+      baseColor.withOpacity(0.2),
+      baseColor.withOpacity(0.1),
+    ];
+
+    int colorIndex = 0;
     return totals.entries.map((entry) {
         final double percentage = (entry.value / sum) * 100;
+        final color = colors[colorIndex % colors.length];
+        colorIndex++;
+        
         return {
           'category': entry.key,
           'amount': entry.value,
           'percentage': percentage,
-          'color': Formatters.getCategoryColor(entry.key),
+          'color': color,
         };
       }).toList()
       ..sort(
@@ -65,15 +82,21 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Detail Pencairan'),
-        elevation: 0
+    return Scaffold(      appBar: AppBar(
+        title: Text(
+          'Detail Pencairan',
+          style: TextStyle(
+            color: theme.colorScheme.secondary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: theme.colorScheme.surface,
+        elevation: 0,
+        iconTheme: IconThemeData(color: theme.colorScheme.secondary),
       ),
-      body: _transactions.isEmpty
-          ? Center(
+      body: _transactions.isEmpty          ? Center(
               child: CircularProgressIndicator(
-                color: theme.colorScheme.primary,
+                color: theme.colorScheme.secondary,
               ),
             )
           : CustomScrollView(
@@ -101,10 +124,9 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                               decoration: BoxDecoration(
                                 color: theme.cardColor,
                                 borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Icon(
+                              ),                              child: Icon(
                                 Icons.calendar_today,
-                                color: theme.colorScheme.primary,
+                                color: theme.colorScheme.secondary,
                                 size: 24,
                               ),
                             ),
@@ -112,11 +134,10 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
+                                children: [                                  Text(
                                     'Tanggal Pencairan',
                                     style: TextStyle(
-                                      color: theme.colorScheme.onSurface.withOpacity(0.7),
+                                      color: theme.colorScheme.secondary.withOpacity(0.7),
                                       fontSize: 14,
                                     ),
                                   ),
@@ -124,7 +145,7 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                                   Text(
                                     Formatters.formatDate(widget.history.reimbursementDate),
                                     style: TextStyle(
-                                      color: theme.colorScheme.onSurface,
+                                      color: theme.colorScheme.secondary,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -142,10 +163,9 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                               decoration: BoxDecoration(
                                 color: theme.cardColor,
                                 borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Icon(
+                              ),                              child: Icon(
                                 Icons.account_balance_wallet,
-                                color: theme.colorScheme.primary,
+                                color: theme.colorScheme.secondary,
                                 size: 24,
                               ),
                             ),
@@ -153,11 +173,10 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
+                                children: [                                  Text(
                                     'Total Pengeluaran',
                                     style: TextStyle(
-                                      color: theme.colorScheme.onSurface.withOpacity(0.7),
+                                      color: theme.colorScheme.secondary.withOpacity(0.7),
                                       fontSize: 14,
                                     ),
                                   ),
@@ -165,7 +184,7 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                                   Text(
                                     'Rp ${Formatters.formatCurrency(widget.history.totalAmount)}',
                                     style: TextStyle(
-                                      color: theme.colorScheme.primary,
+                                      color: theme.colorScheme.secondary,
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -176,19 +195,17 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                           ],
                         ),
                         if (_transactions.isNotEmpty) ...[
-                          const SizedBox(height: 32),
-                          Text(
+                          const SizedBox(height: 32),                          Text(
                             'Distribusi Pengeluaran',
                             style: TextStyle(
-                              color: theme.colorScheme.onSurface,
+                              color: theme.colorScheme.secondary,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 24),
                           SizedBox(
-                            height: 200,
-                            child: PieChart(
+                            height: 200,                            child: PieChart(
                               PieChartData(
                                 sectionsSpace: 2,
                                 centerSpaceRadius: 40,
@@ -201,7 +218,7 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                                     titleStyle: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
-                                      color: theme.colorScheme.onPrimary,
+                                      color: Colors.white,
                                     ),
                                   );
                                 }).toList(),
@@ -222,18 +239,18 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
+                                Expanded(                                  child: Text(
                                     Formatters.getCategoryDisplayName(data['category'] as String),
                                     style: TextStyle(
-                                      color: theme.colorScheme.onSurface,
+                                      color: theme.colorScheme.secondary,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ),
                                 Text(
                                   'Rp ${Formatters.formatCurrency(data['amount'] as double)}',
                                   style: TextStyle(
-                                    color: theme.colorScheme.primary,
+                                    color: theme.colorScheme.secondary,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -248,11 +265,10 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                 SliverPadding(
                   padding: const EdgeInsets.all(16),
                   sliver: SliverList(
-                    delegate: SliverChildListDelegate([
-                      Text(
+                    delegate: SliverChildListDelegate([                      Text(
                         'Daftar Transaksi',
                         style: TextStyle(
-                          color: theme.colorScheme.onSurface,
+                          color: theme.colorScheme.secondary,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -269,14 +285,12 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                               child: Row(
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color: Formatters.getCategoryColor(transaction.category).withOpacity(0.1),
+                                    padding: const EdgeInsets.all(10),                                    decoration: BoxDecoration(
+                                      color: theme.colorScheme.secondary.withOpacity(0.1),
                                       borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Icon(
+                                    ),child: Icon(
                                       Formatters.getCategoryIcon(transaction.category),
-                                      color: Formatters.getCategoryColor(transaction.category),
+                                      color: theme.colorScheme.secondary,
                                       size: 20,
                                     ),
                                   ),
@@ -284,11 +298,10 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
+                                      children: [                                        Text(
                                           Formatters.getCategoryDisplayName(transaction.category),
                                           style: TextStyle(
-                                            color: theme.colorScheme.onSurface,
+                                            color: theme.colorScheme.secondary,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -296,18 +309,18 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                                           Text(
                                             transaction.customDescription!,
                                             style: TextStyle(
-                                              color: theme.colorScheme.onSurface.withOpacity(0.7),
+                                              color: theme.colorScheme.secondary.withOpacity(0.7),
                                               fontSize: 12,
                                             ),
                                           ),
                                       ],
                                     ),
-                                  ),
-                                  Text(
+                                  ),                                  Text(
                                     'Rp ${Formatters.formatCurrency(transaction.amount)}',
                                     style: TextStyle(
-                                      color: theme.colorScheme.primary,
+                                      color: theme.colorScheme.secondary,
                                       fontWeight: FontWeight.bold,
+                                      fontSize: 16,
                                     ),
                                   ),
                                 ],

@@ -11,34 +11,39 @@ import 'package:try2/theme.dart';
 
 class GasHomeScreen extends StatelessWidget {
   const GasHomeScreen({super.key});
-
   void _showDeleteDialog(
     BuildContext context,
     GasHomeController controller,
     int index,
   ) {
+    final theme = Theme.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: theme.dialogBackgroundColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text(
+        title: Text(
           "Hapus Catatan",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: theme.colorScheme.onSurface,
+          ),
         ),
-        content: const Text(
+        content: Text(
           "Apakah Anda yakin ingin menghapus catatan ini?",
-        ),
-        actions: [
+          style: TextStyle(color: theme.colorScheme.onSurface),
+        ),        actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
+            style: TextButton.styleFrom(
+              foregroundColor: theme.colorScheme.secondary,
+            ),
             child: const Text("Batal"),
-          ),
-          ElevatedButton(
+          ),          ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
+              backgroundColor: theme.colorScheme.error,
+              foregroundColor: theme.colorScheme.onError,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -49,14 +54,13 @@ class GasHomeScreen extends StatelessWidget {
       ),
     ).then((confirmed) {
       if (confirmed == true) {
-        controller.deleteLog(index).then((_) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Catatan berhasil dihapus"),
-              backgroundColor: Colors.red,
+        controller.deleteLog(index).then((_) {          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text("Catatan berhasil dihapus"),
+              backgroundColor: theme.colorScheme.error,
               behavior: SnackBarBehavior.floating,
-              margin: EdgeInsets.all(12),
-              shape: RoundedRectangleBorder(
+              margin: const EdgeInsets.all(12),
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
             ),
@@ -65,40 +69,44 @@ class GasHomeScreen extends StatelessWidget {
       }
     });
   }
-
   void _showInitialOdometerDialog(
     BuildContext context,
     GasHomeController controller,
   ) {
+    final theme = Theme.of(context);
     final TextEditingController inputController = TextEditingController();
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: theme.dialogBackgroundColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text(
+        title: Text(
           'Masukkan Odometer Awal',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: theme.colorScheme.onSurface,
+          ),
         ),
         content: TextField(
           controller: inputController,
           keyboardType: TextInputType.number,
+          style: TextStyle(color: theme.colorScheme.onSurface),
           decoration: InputDecoration(
             hintText: 'Contoh: 12000',
+            hintStyle: TextStyle(color: theme.colorScheme.onSurface.withOpacity(0.6)),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFFD4AF37)),
+              borderSide: BorderSide(color: theme.colorScheme.secondary),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFFD4AF37), width: 2),
+              borderSide: BorderSide(color: theme.colorScheme.secondary, width: 2),
             ),
             filled: true,
-            fillColor: const Color(0xFF292929),
+            fillColor: theme.colorScheme.surface,
           ),
-        ),
-        actions: [
+        ),        actions: [
           ElevatedButton(
             onPressed: () {
               final value = double.tryParse(inputController.text);
@@ -108,8 +116,8 @@ class GasHomeScreen extends StatelessWidget {
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFD4AF37),
-              foregroundColor: Colors.black,
+              backgroundColor: theme.colorScheme.secondary,
+              foregroundColor: theme.colorScheme.onSecondary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -121,9 +129,9 @@ class GasHomeScreen extends StatelessWidget {
       ),
     );
   }
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Consumer<GasHomeController>(
       builder: (context, controller, child) {
         final logs = controller.service.getLogs();
@@ -135,9 +143,7 @@ class GasHomeScreen extends StatelessWidget {
         // Odometer awal dari input user (hanya bisa diisi sekali)
         final initialOdometer = controller.initialOdometer ?? 0;
         // Odometer terakhir = odometer awal + total jarak tempuh
-        final latestOdometer = initialOdometer + totalLogDistance;
-
-        return Scaffold(
+        final latestOdometer = initialOdometer + totalLogDistance;        return Scaffold(
           appBar: AppBar(
             leading: IconButton(
               icon: Icon(
@@ -147,24 +153,28 @@ class GasHomeScreen extends StatelessWidget {
               tooltip: 'Ganti Tema',
               onPressed: () => context.read<ThemeProvider>().nextTheme(),
             ),
-            title: const Text(
+            title: Text(
               "Catatan Bensin", 
-              style: TextStyle(fontWeight: FontWeight.bold)
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.secondary,
+              ),
             ),
-            backgroundColor: const Color(0xFF121212),
+            backgroundColor: theme.scaffoldBackgroundColor,
             elevation: 0,
             actions: [
               IconButton(
-                icon: const Icon(Icons.analytics_outlined, color: Color(0xFFD4AF37)),
-                onPressed: () {
-                  if (logs.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Tidak ada data untuk ditampilkan."),
-                        backgroundColor: Colors.orange,
+                icon: Icon(
+                  Icons.analytics_outlined, 
+                  color: theme.colorScheme.secondary,
+                ),                onPressed: () {
+                  if (logs.isEmpty) {                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text("Tidak ada data untuk ditampilkan."),
+                        backgroundColor: theme.colorScheme.tertiary,
                         behavior: SnackBarBehavior.floating,
-                        margin: EdgeInsets.all(12),
-                        shape: RoundedRectangleBorder(
+                        margin: const EdgeInsets.all(12),
+                        shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
                       ),
@@ -191,28 +201,29 @@ class GasHomeScreen extends StatelessWidget {
                     ),
                     child: IntrinsicHeight(
                       child: Column(
-                        children: [
-                          // Dashboard area with gradients
+                        children: [                          // Dashboard area with gradients
                           Container(
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
-                                colors: [Color(0xFF1A1A1A), Color(0xFF121212)],
+                                colors: [
+                                  theme.scaffoldBackgroundColor,
+                                  theme.scaffoldBackgroundColor.withOpacity(0.8),
+                                ],
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black26,
+                                  color: theme.shadowColor.withOpacity(0.3),
                                   blurRadius: 10,
-                                  offset: Offset(0, 4),
+                                  offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
                             padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Tombol set odometer awal jika belum diisi
+                              children: [                                // Tombol set odometer awal jika belum diisi
                                 if (controller.initialOdometer == null) ...[
                                   Padding(
                                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -220,8 +231,8 @@ class GasHomeScreen extends StatelessWidget {
                                       icon: const Icon(Icons.speed),
                                       label: const Text('Set Odometer Awal'),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFFD4AF37),
-                                        foregroundColor: Colors.black,
+                                        backgroundColor: theme.colorScheme.secondary,
+                                        foregroundColor: theme.colorScheme.onSecondary,
                                         elevation: 2,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(10),
@@ -231,9 +242,7 @@ class GasHomeScreen extends StatelessWidget {
                                       onPressed: () => _showInitialOdometerDialog(context, controller),
                                     ),
                                   ),
-                                ],
-
-                                // Dashboard title
+                                ],                                // Dashboard title
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 20),
                                   child: Row(
@@ -242,7 +251,7 @@ class GasHomeScreen extends StatelessWidget {
                                       Text(
                                         "Dashboard Bensin",
                                         style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                          color: const Color(0xFFD4AF37),
+                                          color: theme.colorScheme.secondary,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18,
                                         ),
@@ -252,18 +261,18 @@ class GasHomeScreen extends StatelessWidget {
                                         onPressed: () => controller.toggleAddForm(),
                                         icon: Icon(
                                           controller.showAddForm ? Icons.close : Icons.add,
-                                          color: Colors.black,
+                                          color: theme.colorScheme.onSecondary,
                                         ),
                                         label: Text(
                                           controller.showAddForm ? "Tutup" : "Tambah Catatan",
-                                          style: const TextStyle(
-                                            color: Colors.black,
+                                          style: TextStyle(
+                                            color: theme.colorScheme.onSecondary,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color(0xFFD4AF37),
-                                          foregroundColor: Colors.black,
+                                          backgroundColor: theme.colorScheme.secondary,
+                                          foregroundColor: theme.colorScheme.onSecondary,
                                           elevation: 3,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(20),
@@ -273,31 +282,29 @@ class GasHomeScreen extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                ),
-
-                                // Odometer Card
+                                ),                                // Odometer Card
                                 Container(
                                   margin: const EdgeInsets.only(bottom: 20),
                                   padding: const EdgeInsets.all(20),
                                   decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
+                                    gradient: LinearGradient(
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                       colors: [
-                                        Color(0xFF2A2A2A),
-                                        Color(0xFF1E1E1E),
+                                        theme.colorScheme.surface,
+                                        theme.colorScheme.surface.withOpacity(0.8),
                                       ],
                                     ),
                                     borderRadius: BorderRadius.circular(20),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withOpacity(0.3),
+                                        color: theme.shadowColor.withOpacity(0.3),
                                         blurRadius: 10,
                                         offset: const Offset(0, 4),
                                       ),
                                     ],
                                     border: Border.all(
-                                      color: Colors.grey.withOpacity(0.2),
+                                      color: theme.colorScheme.outline.withOpacity(0.2),
                                       width: 1,
                                     ),
                                   ),
@@ -306,16 +313,16 @@ class GasHomeScreen extends StatelessWidget {
                                     children: [
                                       Row(
                                         children: [
-                                          const Icon(
+                                          Icon(
                                             Icons.speed,
-                                            color: Color(0xFFD4AF37),
+                                            color: theme.colorScheme.secondary,
                                             size: 26,
                                           ),
                                           const SizedBox(width: 10),
                                           Text(
                                             "Odometer Terakhir",
                                             style: TextStyle(
-                                              color: Colors.white70,
+                                              color: theme.colorScheme.onSurface.withOpacity(0.7),
                                               fontWeight: FontWeight.w500,
                                               fontSize: 16,
                                             ),
@@ -331,18 +338,18 @@ class GasHomeScreen extends StatelessWidget {
                                             children: [
                                               Text(
                                                 "${latestOdometer.toStringAsFixed(0)}",
-                                                style: const TextStyle(
-                                                  color: Color(0xFFD4AF37),
+                                                style: TextStyle(
+                                                  color: theme.colorScheme.secondary,
                                                   fontSize: 38,
                                                   fontWeight: FontWeight.bold,
                                                   letterSpacing: 1.2,
                                                 ),
                                               ),
                                               const SizedBox(width: 8),
-                                              const Text(
+                                              Text(
                                                 "km",
                                                 style: TextStyle(
-                                                  color: Colors.white,
+                                                  color: theme.colorScheme.onSurface,
                                                   fontSize: 18,
                                                 ),
                                               ),
@@ -352,9 +359,7 @@ class GasHomeScreen extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                ),
-
-                                // Stats Cards
+                                ),                                // Stats Cards
                                 if (logs.isNotEmpty) ...[
                                   Row(
                                     children: [
@@ -363,7 +368,7 @@ class GasHomeScreen extends StatelessWidget {
                                           title: "Total Jarak",
                                           value: "${totalDistance.toStringAsFixed(0)} km",
                                           icon: Icons.route,
-                                          color: const Color(0xFFD4AF37),
+                                          color: theme.colorScheme.secondary,
                                         ),
                                       ),
                                       const SizedBox(width: 12),
@@ -372,7 +377,7 @@ class GasHomeScreen extends StatelessWidget {
                                           title: "Total Biaya",
                                           value: Formatters.currency.format(totalCost),
                                           icon: Icons.account_balance_wallet,
-                                          color: const Color(0xFFD4AF37),
+                                          color: theme.colorScheme.secondary,
                                         ),
                                       ),
                                       const SizedBox(width: 12),
@@ -381,7 +386,7 @@ class GasHomeScreen extends StatelessWidget {
                                           title: "Rata-rata",
                                           value: "${avgEfficiency.toStringAsFixed(1)} km/L",
                                           icon: Icons.local_gas_station,
-                                          color: const Color(0xFFD4AF37),
+                                          color: theme.colorScheme.secondary,
                                         ),
                                       ),
                                     ],
@@ -393,16 +398,16 @@ class GasHomeScreen extends StatelessWidget {
                                     alignment: Alignment.center,
                                     child: Column(
                                       children: [
-                                        const Icon(
+                                        Icon(
                                           Icons.info_outline,
-                                          color: Colors.white38,
+                                          color: theme.colorScheme.onSurface.withOpacity(0.38),
                                           size: 32,
                                         ),
                                         const SizedBox(height: 12),
-                                        const Text(
+                                        Text(
                                           "Tambahkan catatan bensin untuk melihat statistik",
                                           style: TextStyle(
-                                            color: Colors.white54,
+                                            color: theme.colorScheme.onSurface.withOpacity(0.54),
                                             fontStyle: FontStyle.italic,
                                             fontSize: 14,
                                           ),
@@ -414,17 +419,15 @@ class GasHomeScreen extends StatelessWidget {
                                 ],
                               ],
                             ),
-                          ),
-
-                          // Add form
+                          ),                          // Add form
                           AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             height: controller.showAddForm ? null : 0,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF1A1A1A),
+                              color: theme.colorScheme.surface,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
+                                  color: theme.shadowColor.withOpacity(0.2),
                                   blurRadius: 8,
                                   offset: const Offset(0, 4),
                                 ),
@@ -441,38 +444,37 @@ class GasHomeScreen extends StatelessWidget {
                                           "Tambah Catatan Baru",
                                           style: Theme.of(context).textTheme.titleMedium!.copyWith(
                                                 fontWeight: FontWeight.bold,
-                                                color: const Color(0xFFD4AF37),
+                                                color: theme.colorScheme.secondary,
                                               ),
                                           textAlign: TextAlign.center,
                                         ),
                                         const SizedBox(height: 20),
                                         Row(
                                           children: [
-                                            const Icon(Icons.straighten, color: Color(0xFFD4AF37)),
+                                            Icon(Icons.straighten, color: theme.colorScheme.secondary),
                                             const SizedBox(width: 12),
                                             Expanded(
                                               child: TextFormField(
                                                 controller: controller.distanceController,
-                                                keyboardType: TextInputType.number,
-                                                decoration: InputDecoration(
+                                                keyboardType: TextInputType.number,                                                decoration: InputDecoration(
                                                   labelText: 'Jarak Tempuh (km)',
-                                                  labelStyle: const TextStyle(color: Colors.white70),
+                                                  labelStyle: TextStyle(color: theme.colorScheme.onSurface.withOpacity(0.7)),
                                                   enabledBorder: OutlineInputBorder(
                                                     borderRadius: BorderRadius.circular(10),
-                                                    borderSide: BorderSide(color: Colors.grey.withOpacity(0.3)),
+                                                    borderSide: BorderSide(color: theme.colorScheme.outline.withOpacity(0.3)),
                                                   ),
                                                   focusedBorder: OutlineInputBorder(
                                                     borderRadius: BorderRadius.circular(10),
-                                                    borderSide: const BorderSide(color: Color(0xFFD4AF37)),
+                                                    borderSide: BorderSide(color: theme.colorScheme.secondary),
                                                   ),
                                                   errorBorder: OutlineInputBorder(
                                                     borderRadius: BorderRadius.circular(10),
-                                                    borderSide: const BorderSide(color: Colors.red),
+                                                    borderSide: BorderSide(color: theme.colorScheme.error),
                                                   ),
                                                   filled: true,
-                                                  fillColor: const Color(0xFF222222),
+                                                  fillColor: theme.colorScheme.surfaceVariant,
                                                 ),
-                                                style: const TextStyle(color: Colors.white),
+                                                style: TextStyle(color: theme.colorScheme.onSurface),
                                                 validator: (value) {
                                                   if (value == null || value.isEmpty) {
                                                     return 'Jarak tidak boleh kosong';
@@ -487,33 +489,31 @@ class GasHomeScreen extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 16),
-                                        Row(
+                                        const SizedBox(height: 16),                                        Row(
                                           children: [
                                             Expanded(
                                               child: TextFormField(
                                                 controller: controller.volumeController,
-                                                keyboardType: TextInputType.number,
-                                                decoration: InputDecoration(
+                                                keyboardType: TextInputType.number,                                                decoration: InputDecoration(
                                                   labelText: 'Volume (L)',
-                                                  labelStyle: const TextStyle(color: Colors.white70),
-                                                  prefixIcon: const Icon(Icons.local_gas_station, color: Color(0xFFD4AF37)),
+                                                  labelStyle: TextStyle(color: theme.colorScheme.onSurface.withOpacity(0.7)),
+                                                  prefixIcon: Icon(Icons.local_gas_station, color: theme.colorScheme.secondary),
                                                   enabledBorder: OutlineInputBorder(
                                                     borderRadius: BorderRadius.circular(10),
-                                                    borderSide: BorderSide(color: Colors.grey.withOpacity(0.3)),
+                                                    borderSide: BorderSide(color: theme.colorScheme.outline.withOpacity(0.3)),
                                                   ),
                                                   focusedBorder: OutlineInputBorder(
                                                     borderRadius: BorderRadius.circular(10),
-                                                    borderSide: const BorderSide(color: Color(0xFFD4AF37)),
+                                                    borderSide: BorderSide(color: theme.colorScheme.secondary),
                                                   ),
                                                   errorBorder: OutlineInputBorder(
                                                     borderRadius: BorderRadius.circular(10),
-                                                    borderSide: const BorderSide(color: Colors.red),
+                                                    borderSide: BorderSide(color: theme.colorScheme.error),
                                                   ),
                                                   filled: true,
-                                                  fillColor: const Color(0xFF222222),
+                                                  fillColor: theme.colorScheme.surfaceVariant,
                                                 ),
-                                                style: const TextStyle(color: Colors.white),
+                                                style: TextStyle(color: theme.colorScheme.onSurface),
                                                 validator: (value) {
                                                   if (value == null || value.isEmpty) {
                                                     return 'Volume tidak boleh kosong';
@@ -526,31 +526,29 @@ class GasHomeScreen extends StatelessWidget {
                                                 },
                                               ),
                                             ),
-                                            const SizedBox(width: 16),
-                                            Expanded(
+                                            const SizedBox(width: 16),                                            Expanded(
                                               child: TextFormField(
                                                 controller: controller.costController,
-                                                keyboardType: TextInputType.number,
-                                                decoration: InputDecoration(
+                                                keyboardType: TextInputType.number,                                                decoration: InputDecoration(
                                                   labelText: 'Biaya Isi (Rp)',
-                                                  labelStyle: const TextStyle(color: Colors.white70),
-                                                  prefixIcon: const Icon(Icons.attach_money, color: Color(0xFFD4AF37)),
+                                                  labelStyle: TextStyle(color: theme.colorScheme.onSurface.withOpacity(0.7)),
+                                                  prefixIcon: Icon(Icons.attach_money, color: theme.colorScheme.secondary),
                                                   enabledBorder: OutlineInputBorder(
                                                     borderRadius: BorderRadius.circular(10),
-                                                    borderSide: BorderSide(color: Colors.grey.withOpacity(0.3)),
+                                                    borderSide: BorderSide(color: theme.colorScheme.outline.withOpacity(0.3)),
                                                   ),
                                                   focusedBorder: OutlineInputBorder(
                                                     borderRadius: BorderRadius.circular(10),
-                                                    borderSide: const BorderSide(color: Color(0xFFD4AF37)),
+                                                    borderSide: BorderSide(color: theme.colorScheme.secondary),
                                                   ),
                                                   errorBorder: OutlineInputBorder(
                                                     borderRadius: BorderRadius.circular(10),
-                                                    borderSide: const BorderSide(color: Colors.red),
+                                                    borderSide: BorderSide(color: theme.colorScheme.error),
                                                   ),
                                                   filled: true,
-                                                  fillColor: const Color(0xFF222222),
+                                                  fillColor: theme.colorScheme.surfaceVariant,
                                                 ),
-                                                style: const TextStyle(color: Colors.white),
+                                                style: TextStyle(color: theme.colorScheme.onSurface),
                                                 validator: (value) {
                                                   if (value == null || value.isEmpty) {
                                                     return 'Biaya tidak boleh kosong';
@@ -565,8 +563,7 @@ class GasHomeScreen extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 24),
-                                        Row(
+                                        const SizedBox(height: 24),                                        Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             OutlinedButton.icon(
@@ -574,8 +571,8 @@ class GasHomeScreen extends StatelessWidget {
                                               icon: const Icon(Icons.close),
                                               label: const Text("Batal"),
                                               style: OutlinedButton.styleFrom(
-                                                foregroundColor: Colors.grey[400],
-                                                side: BorderSide(color: Colors.grey[600]!),
+                                                foregroundColor: theme.colorScheme.onSurface.withOpacity(0.7),
+                                                side: BorderSide(color: theme.colorScheme.outline),
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(10),
                                                 ),
@@ -586,13 +583,12 @@ class GasHomeScreen extends StatelessWidget {
                                             ElevatedButton.icon(
                                               onPressed: () async {
                                                 try {
-                                                  await controller.saveLog();
-                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                    const SnackBar(
+                                                  await controller.saveLog();                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    SnackBar(
                                                       content: Text(
                                                         "Catatan bensin berhasil disimpan!",
                                                       ),
-                                                      backgroundColor: Color(0xFF2E7D32),
+                                                      backgroundColor: theme.colorScheme.secondary,
                                                       behavior: SnackBarBehavior.floating,
                                                       margin: EdgeInsets.all(12),
                                                       shape: RoundedRectangleBorder(
@@ -607,8 +603,8 @@ class GasHomeScreen extends StatelessWidget {
                                               icon: const Icon(Icons.save),
                                               label: const Text("Simpan", style: TextStyle(fontWeight: FontWeight.bold)),
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor: const Color(0xFFD4AF37),
-                                                foregroundColor: Colors.black,
+                                                backgroundColor: theme.colorScheme.secondary,
+                                                foregroundColor: theme.colorScheme.onSecondary,
                                                 elevation: 3,
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(10),
@@ -622,10 +618,8 @@ class GasHomeScreen extends StatelessWidget {
                                     ),
                                   )
                                 : const SizedBox.shrink(),
-                          ),
-
-                          // Divider
-                          const Divider(height: 1, color: Color(0xFF333333)),
+                          ),                          // Divider
+                          Divider(height: 1, color: theme.colorScheme.outline.withOpacity(0.3)),
 
                           // Logs list
                           SizedBox(
@@ -633,7 +627,7 @@ class GasHomeScreen extends StatelessWidget {
                             child: logs.isEmpty
                                 ? const EmptyState()
                                 : Container(
-                                    color: const Color(0xFF121212),
+                                    color: theme.scaffoldBackgroundColor,
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -641,16 +635,16 @@ class GasHomeScreen extends StatelessWidget {
                                           padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
                                           child: Row(
                                             children: [
-                                              const Icon(
+                                              Icon(
                                                 Icons.history,
-                                                color: Color(0xFFD4AF37),
+                                                color: theme.colorScheme.secondary,
                                                 size: 22,
                                               ),
                                               const SizedBox(width: 8),
                                               Text(
                                                 "Riwayat Catatan",
                                                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                                      color: const Color(0xFFD4AF37),
+                                                      color: theme.colorScheme.secondary,
                                                       fontWeight: FontWeight.bold,
                                                     ),
                                               ),
@@ -660,11 +654,11 @@ class GasHomeScreen extends StatelessWidget {
                                         Expanded(
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              color: const Color(0xFF1A1A1A),
+                                              color: theme.colorScheme.surface,
                                               borderRadius: BorderRadius.circular(8),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors.black.withOpacity(0.2),
+                                                  color: theme.shadowColor.withOpacity(0.2),
                                                   blurRadius: 5,
                                                 ),
                                               ],

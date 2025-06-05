@@ -13,9 +13,9 @@ class StatCard extends StatelessWidget {
     required this.icon,
     required this.color,
   });
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -37,7 +37,7 @@ class StatCard extends StatelessWidget {
             title,
             style: TextStyle(
               fontSize: 12,
-              color: Colors.grey[600],
+              color: theme.colorScheme.onSurface.withOpacity(0.6),
             ),
           ),
         ],

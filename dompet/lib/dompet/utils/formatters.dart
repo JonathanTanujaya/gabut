@@ -13,14 +13,13 @@ class Formatters {
   static String formatDate(DateTime date) {
     return DateFormat('dd MMM yyyy').format(date);
   }
-
   // Palet warna premium hitam-emas
   static Color getCategoryColor(String category) {
     const colorMap = {
       'OVO': Color(0xFF4A90E2),         // Biru premium
       'Shopee': Color(0xFFEF8354),      // Oranye elegan
       'Gopay': Color(0xFF4CAF50),       // Hijau premium
-      'UKT': Color(0xFFE53935),         // Merah premium
+      'UKT': Color(0xFFFF4444),         // Merah premium yang lebih terang
       'Kursus': Color(0xFF9C27B0),      // Ungu premium
       'Lainnya': Color(0xFF757575),     // Abu-abu premium
     };

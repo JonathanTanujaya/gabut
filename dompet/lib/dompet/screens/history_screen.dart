@@ -11,10 +11,17 @@ class HistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Catatan Reimburse'),
+    return Scaffold(      appBar: AppBar(
+        title: Text(
+          'Catatan Reimburse',
+          style: TextStyle(
+            color: theme.colorScheme.secondary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: theme.colorScheme.surface,
         elevation: 0,
+        iconTheme: IconThemeData(color: theme.colorScheme.secondary),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -30,10 +37,9 @@ class HistoryScreen extends StatelessWidget {
         child: FutureBuilder<List<ReimbursementHistory>>(
           future: DatabaseHelper().getAllReimbursementHistory(),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
+            if (snapshot.connectionState == ConnectionState.waiting) {              return Center(
                 child: CircularProgressIndicator(
-                  color: theme.colorScheme.primary,
+                  color: theme.colorScheme.secondary,
                 ),
               );
             }
@@ -42,18 +48,17 @@ class HistoryScreen extends StatelessWidget {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
+                  children: [                    Icon(
                       Icons.history,
                       size: 72,
-                      color: theme.colorScheme.onSurface.withOpacity(0.5),
+                      color: theme.colorScheme.secondary.withOpacity(0.6),
                     ),
-                    const SizedBox(height: 16),
-                    Text(
+                    const SizedBox(height: 16),                    Text(
                       'Belum Ada Catatan Reimburse',
                       style: TextStyle(
                         fontSize: 18,
-                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                        color: theme.colorScheme.secondary.withOpacity(0.8),
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
@@ -79,9 +84,8 @@ class HistoryScreen extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => HistoryDetailScreen(history: history),
                         ),
-                      ),
-                      splashColor: theme.colorScheme.primary.withOpacity(0.1),
-                      highlightColor: theme.colorScheme.primary.withOpacity(0.05),
+                      ),                      splashColor: theme.colorScheme.secondary.withOpacity(0.1),
+                      highlightColor: theme.colorScheme.secondary.withOpacity(0.05),
                       child: Column(
                         children: [
                           Container(
@@ -92,20 +96,18 @@ class HistoryScreen extends StatelessWidget {
                               vertical: 12,
                             ),
                             child: Row(
-                              children: [
-                                Icon(
+                              children: [                                Icon(
                                   Icons.currency_exchange,
-                                  color: theme.colorScheme.primary,
+                                  color: theme.colorScheme.secondary,
                                 ),
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
+                                    children: [                                      Text(
                                         'Reimburse ${Formatters.formatDate(history.reimbursementDate)}',
                                         style: TextStyle(
-                                          color: theme.colorScheme.onSurface,
+                                          color: theme.colorScheme.secondary,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -118,12 +120,12 @@ class HistoryScreen extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                ),
-                                Text(
+                                ),                                Text(
                                   Formatters.formatCurrency(history.totalAmount),
                                   style: TextStyle(
-                                    color: theme.colorScheme.primary,
+                                    color: theme.colorScheme.secondary,
                                     fontWeight: FontWeight.bold,
+                                    fontSize: 16,
                                   ),
                                 ),
                               ],

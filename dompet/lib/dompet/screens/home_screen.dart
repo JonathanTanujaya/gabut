@@ -385,8 +385,7 @@ class _HomeScreenState extends State<HomeScreen>
         ),
         backgroundColor: _isScrolled 
           ? theme.colorScheme.secondary.withOpacity(0.1)
-          : theme.colorScheme.surface,
-        elevation: _isScrolled ? 2 : 0,
+          : theme.colorScheme.surface,        elevation: _isScrolled ? 2 : 0,
         actions: [
           const ThemeSwitcher(),
           IconButton(
@@ -401,12 +400,6 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ),
           ),
-          if (_transactions.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.currency_exchange),
-              onPressed: _handleReimburse,
-              tooltip: 'Reimburse',
-            ),
         ],
       ),
       body: SingleChildScrollView(
@@ -426,13 +419,12 @@ class _HomeScreenState extends State<HomeScreen>
                   bottomRight: Radius.circular(24),
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Column(                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Saldo Tersedia',
                     style: TextStyle(
-                      color: theme.colorScheme.onSurface.withOpacity(0.7),
+                      color: theme.colorScheme.secondary.withOpacity(0.8),
                       fontSize: 14,
                     ),
                   ),
@@ -629,21 +621,20 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Row(                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         'Aktivitas Terkini',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.onBackground,
+                          color: theme.colorScheme.secondary,
                         ),
                       ),
                       Text(
                         '${_transactions.length} Item',
                         style: TextStyle(
-                          color: theme.colorScheme.onBackground.withOpacity(0.7),
+                          color: theme.colorScheme.secondary.withOpacity(0.7),
                           fontSize: 14,
                         ),
                       ),
@@ -659,21 +650,22 @@ class _HomeScreenState extends State<HomeScreen>
                         Icon(
                           Icons.account_balance_wallet,
                           size: 64,
-                          color: theme.colorScheme.onBackground.withOpacity(0.5),
+                          color: theme.colorScheme.secondary.withOpacity(0.5),
                         ),
                         const SizedBox(height: 16),
                         Text(
                           'Belum Ada Transaksi',
                           style: TextStyle(
-                            color: theme.colorScheme.onBackground.withOpacity(0.7),
+                            color: theme.colorScheme.secondary.withOpacity(0.8),
                             fontSize: 16,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Tekan tombol "Tambah" untuk memulai',
                           style: TextStyle(
-                            color: theme.colorScheme.onBackground.withOpacity(0.5),
+                            color: theme.colorScheme.secondary.withOpacity(0.6),
                             fontSize: 14,
                           ),
                         ),
@@ -713,8 +705,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   ),
                                   const SizedBox(width: 16),
                                   Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                    child: Column(                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           transaction.customDescription ??
@@ -722,7 +713,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                 transaction.category,
                                               ),
                                           style: TextStyle(
-                                            color: theme.colorScheme.onSurface,
+                                            color: theme.colorScheme.secondary,
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -731,7 +722,7 @@ class _HomeScreenState extends State<HomeScreen>
                                         Text(
                                           Formatters.formatDate(transaction.date),
                                           style: TextStyle(
-                                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                                            color: theme.colorScheme.secondary.withOpacity(0.7),
                                             fontSize: 12,
                                           ),
                                         ),

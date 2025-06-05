@@ -6,9 +6,9 @@ class StatsSummary extends StatelessWidget {
   final List<GasLog> logs;
 
   const StatsSummary({super.key, required this.logs});
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     // Calculate statistics
     double totalDistance = 0;
     double totalCost = 0;
@@ -39,30 +39,37 @@ class StatsSummary extends StatelessWidget {
         child: Column(
           children: [
             _buildStatRow(
+              theme,
               "Total Jarak Tempuh", 
               "${totalDistance.toStringAsFixed(1)} km"
             ),
             _buildStatRow(
+              theme,
               "Total Biaya Pengeluaran", 
               Formatters.currency.format(totalCost)
             ),
             _buildStatRow(
+              theme,
               "Total Bahan Bakar", 
               "${totalLiters.toStringAsFixed(2)} liter"
             ),
             _buildStatRow(
+              theme,
               "Rata-rata Efisiensi", 
               "${averageEfficiency.toStringAsFixed(2)} km/L"
             ),
             _buildStatRow(
+              theme,
               "Efisiensi Terbaik", 
               "${bestEfficiency.toStringAsFixed(2)} km/L"
             ),
             _buildStatRow(
+              theme,
               "Efisiensi Terburuk", 
               "${worstEfficiency.toStringAsFixed(2)} km/L"
             ),
             _buildStatRow(
+              theme,
               "Biaya per Kilometer", 
               "${Formatters.currency.format(averageCostPerKm)}/km"
             ),
@@ -70,9 +77,7 @@ class StatsSummary extends StatelessWidget {
         ),
       ),
     );
-  }
-  
-  Widget _buildStatRow(String label, String value) {
+  }  Widget _buildStatRow(ThemeData theme, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -80,15 +85,15 @@ class StatsSummary extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: theme.colorScheme.onSurface,
             ),
           ),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Color(0xFF2E7D32),
+              color: theme.colorScheme.secondary,
             ),
           ),
         ],
