@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:try2/gas/models/gas_log.dart';
 import 'package:try2/gas/service/gas_log_service.dart';
+import 'package:try2/services/widget_service.dart';
 
 class GasHomeController extends ChangeNotifier {
   final GasLogService service;
@@ -55,6 +56,8 @@ class GasHomeController extends ChangeNotifier {
       );
 
       await service.addLog(log);
+      // Update widget home dengan odometer dan efisiensi terbaru
+      await WidgetService.updateOdometer(odometer.toInt(), kmPerLiter);
       toggleAddForm();
       notifyListeners();
     }

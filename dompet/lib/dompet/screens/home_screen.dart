@@ -3,6 +3,7 @@ import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:try2/dompet/models/reimbursement.dart';
 import '../models/trans.dart';
 import '../services/database_helper.dart';
+import 'package:try2/services/widget_service.dart';
 import '../utils/formatters.dart';
 import '../widgets/theme_switcher.dart';
 import 'history_screen.dart';
@@ -339,6 +340,9 @@ class _HomeScreenState extends State<HomeScreen>
     await _dbHelper.insertReimbursementHistory(history);
     await _dbHelper.markAsReimbursed(_transactions.map((t) => t.id!).toList());
     await _loadTransactions();
+
+    // Update saldo reimburse widget
+    await WidgetService.updateReimburseSaldo(total.toInt());
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
